@@ -3,69 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>折立 - 完美挂件版</title>
+    <title>折立 - 完美版</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 严格遵循你提供的复古色卡方案 */
-            --v-red: #BB3E00;   /* 顶部红 */
+            --v-red: #BB3E00;   /* 中国结红 */
             --v-orange: #F7AD45; /* 暖橙 */
             --v-green: #657C6A;  /* 侧边绿 */
             --v-gray: #A2B9A7;   /* 背景底色 */
-            --paper: #fdf6e3;    /* 纸片米黄 */
+            --paper: #fdf6e3;    /* 纸片色 */
         }
 
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; display: flex; overflow: hidden; }
         
-        /* 侧边栏样式优化 */
+        /* 侧边栏 */
         .sidebar { 
             position: fixed; top: 0; left: 0; width: 80px; height: 100vh; 
             background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
         }
 
-        /* --- 【中国结挂件：精致对齐版】 --- */
+        /* --- 【精致对齐的中国结吊饰】 --- */
         #site-logo-container {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            margin-top: 25px; /* 距离顶部位置 */
             display: flex; flex-direction: column; align-items: center; cursor: pointer;
         }
 
-        /* 精致中国结 */
-        .knot-main {
-            width: 26px; height: 26px; background: var(--v-red);
-            transform: rotate(45deg); border-radius: 3px;
+        /* 中国结核心 */
+        .knot {
+            width: 24px; height: 24px; background: var(--v-red);
+            transform: rotate(45deg); border-radius: 2px;
             box-shadow: 1px 1px 3px rgba(0,0,0,0.2); position: relative;
         }
-        .knot-main::after {
+        /* 内部镂空感 */
+        .knot::after {
             content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
-            border: 1px solid rgba(255,255,255,0.3); border-radius: 2px;
+            border: 1px solid rgba(255,255,255,0.4); border-radius: 1px;
         }
 
-        /* 连接红线 */
-        .knot-thread { width: 1.5px; height: 22px; background: var(--v-red); margin: -2px 0; }
+        /* 细红线 */
+        .knot-line { 
+            width: 1.5px; height: 20px; background: var(--v-red); 
+            margin: -2px 0; /* 负边距确保衔接 */
+            z-index: 2;
+        }
 
         /* 复古纸片 */
-        .paper-pendant {
+        .paper-tag {
             background: var(--paper); padding: 10px 6px; border-radius: 2px;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1);
             transform: rotate(-1.5deg); display: flex; justify-content: center; align-items: center;
         }
 
-        .site-title-v { 
+        /* 纸片上的字 */
+        .site-name-v { 
             writing-mode: vertical-rl; color: #2c1e14; 
             font-family: 'Noto Serif SC', serif; font-size: 18px; 
             font-weight: 900; letter-spacing: 4px; text-align: center;
         }
 
-        /* 分类导航 */
-        #label-list { margin-top: 175px; width: 100%; }
+        /* 标签导航 */
+        #label-list { margin-top: 50px; width: 100%; }
         .nav-label { 
-            color: rgba(255, 255, 255, 0.6); font-size: 14px; margin: 18px 0; 
+            color: rgba(255, 255, 255, 0.6); font-size: 14px; margin: 20px 0; 
             cursor: pointer; text-align: center; font-weight: bold; position: relative;
         }
         .nav-label.active { color: #fff; }
         .nav-label.active::after { 
-            content: ''; position: absolute; bottom: -4px; left: 25%; 
+            content: ''; position: absolute; bottom: -5px; left: 25%; 
             width: 50%; height: 2px; background: var(--v-orange); 
         }
 
@@ -74,35 +78,38 @@
         .card { 
             background: #fff; border-radius: 12px; padding: 30px; margin-bottom: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--v-red);
+            animation: fadeIn 0.4s ease-out;
         }
-        .card h3 { margin: 0 0 15px 0; color: var(--v-green); font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f4f4f4; padding-bottom: 12px; }
-        .card-body { color: #333; line-height: 1.9; white-space: pre-wrap; font-size: 16px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card h3 { margin: 0 0 15px 0; color: var(--v-green); font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
+        .card-body { color: #333; line-height: 1.8; white-space: pre-wrap; font-size: 16px; }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div id="site-logo-container" onclick="location.reload()">
-            <div class="knot-main"></div>
-            <div class="knot-thread"></div>
-            <div class="paper-pendant">
-                <div class="site-title-v">折立</div>
+            <div class="knot"></div>
+            <div class="knot-line"></div>
+            <div class="paper-tag">
+                <div class="site-name-v">折立</div>
             </div>
         </div>
         <div id="label-list"></div>
     </div>
     
     <div class="main-content">
-        <div id="feed">同步中...</div>
+        <div id="feed">正在同步笔记...</div>
     </div>
 
     <script>
         const repo = 'skakla/mmkkl';
         const feed = document.getElementById('feed');
 
-        async function init() {
+        async function fetchNotes() {
             try {
-                // 增加状态参数确保获取最新数据
-                const res = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${new Date().getTime()}`);
+                // 增加时间戳，强行绕过 API 缓存
+                const res = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
                 if (!res.ok) throw new Error();
                 const data = await res.json();
                 
@@ -110,7 +117,7 @@
                 renderLabels(data);
                 renderNotes(data);
             } catch (e) {
-                feed.innerHTML = '<div class="card"><h3>同步暂时中断</h3><div class="card-body">请确保仓库已公开或检查网络状态。</div></div>';
+                feed.innerHTML = '<div class="card"><h3>同步暂时中断</h3><div class="card-body">请确保仓库已公开或检查网络。</div></div>';
             }
         }
 
@@ -134,15 +141,19 @@
 
         function renderNotes(notes) {
             feed.innerHTML = '';
+            if(notes.length === 0) {
+                feed.innerHTML = '<p style="color:white">暂无内容</p>';
+                return;
+            }
             notes.forEach(item => {
                 const c = document.createElement('div');
                 c.className = 'card';
-                c.innerHTML = `<h3>${item.title}</h3><div class="card-body">${item.body || '无内容'}</div>`;
+                c.innerHTML = `<h3>${item.title}</h3><div class="card-body">${item.body || ''}</div>`;
                 feed.appendChild(c);
             });
         }
 
-        init();
+        fetchNotes();
     </script>
 </body>
 </html>
