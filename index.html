@@ -22,7 +22,9 @@
         .site-name-v { writing-mode: vertical-rl; color: var(--text-main); font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
 
         .sidebar-nav { margin-top: auto; margin-bottom: 35px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .nav-item { cursor: pointer; opacity: 0.7; padding: 5px; transition: opacity 0.2s; }
+        
+        /* 1. 修复切换闪烁：移除了 transition 动画 */
+        .nav-item { cursor: pointer; opacity: 0.7; padding: 5px; }
         .nav-item div { color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 900; }
         .nav-item.active { opacity: 1; }
         .nav-item.active div { color: var(--v-orange); }
@@ -45,13 +47,16 @@
         .icon-search-v .c { width: 12px; height: 12px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
         .icon-search-v .l { width: 3px; height: 7px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
 
-        /* Anti-flicker container style */
-        #view-container { padding: 0 40px 40px 40px; transition: opacity 0.15s ease-in-out; opacity: 1; }
+        /* 内容容器淡入淡出（保留了微弱的整体切换效果，若也不想要可删除 transition） */
+        #view-container { padding: 0 40px 40px 40px; transition: opacity 0.1s ease-in-out; opacity: 1; }
         #view-container.loading-fade { opacity: 0; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-3px); }
+        
+        /* 2. 修复卡片下沉：移除了 transform 位移 */
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; }
+        .card:hover { /* 删除了 translateY(-3px) */ }
+        
         .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); margin-bottom: 14px; font-weight: 900; }
         
         .card-list { list-style: none; padding: 0; margin: 0; border-top: 1.5px solid #eee; padding-top: 12px; }
@@ -115,7 +120,7 @@
                 setNav(navId);
                 view.classList.remove('loading-fade');
                 window.scrollTo(0,0);
-            }, 150);
+            }, 100); // 缩短了切换等待时间
         }
 
         function renderLoading() {
