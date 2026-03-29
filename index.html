@@ -3,142 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>折立 - 智能搜索版</title>
+    <title>折立 - 精准搜索版</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
             --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
             --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff;
-            --highlight: #ffee58; /* 搜索高光黄 */
+            --highlight: #ffee58;
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow: hidden; }
         
-        /* 侧边栏布局 */
-        .sidebar { 
-            position: fixed; top: 0; left: 0; width: 80px; height: 100vh; 
-            background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
-        }
-
-        /* 网站挂件系统 */
+        /* 侧边栏 */
+        .sidebar { position: fixed; top: 0; left: 0; width: 80px; height: 100vh; background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
-        .knot::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(255,255,255,0.4); }
-        .knot-line { width: 1.5px; height: 18px; background: var(--v-red); margin: -1px 0; z-index: 2; }
-        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1); transform: rotate(-1.5deg); display: flex; justify-content: center; }
+        .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
+        .knot-line { width: 1.5px; height: 18px; background: var(--v-red); margin: -1px 0; }
+        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; transform: rotate(-1.5deg); display: flex; justify-content: center; width: 32px; box-sizing: border-box; }
         .site-name-v { writing-mode: vertical-rl; color: #2c1e14; font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; text-align: center; }
 
         /* 底部导航 */
         .sidebar-nav { margin-top: auto; margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px; }
-        .nav-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.2s; padding: 8px; border-radius: 4px; }
-        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 8px; }
         .nav-item div { writing-mode: vertical-rl; color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 14px; letter-spacing: 2px; opacity: 0.6; }
         .nav-item.active div { color: var(--v-orange); opacity: 1; }
 
-        /* 主内容容器 */
-        .main-content { margin-left: 80px; flex: 1; overflow-y: auto; height: 100vh; box-sizing: border-box; position: relative; }
+        .main-content { margin-left: 80px; flex: 1; overflow-y: auto; height: 100vh; box-sizing: border-box; }
 
-        /* --- 【精致对齐的顶部搜索栏】 --- */
-        .header-search-bar {
-            display: flex; justify-content: flex-end; align-items: center; 
-            padding: 20px 40px; 
-            max-width: 1000px; margin: 0 auto;
-            position: relative; z-index: 50;
-        }
-
-        /* 搜索输入框容器 - 初始向右收缩 */
-        .search-input-wrapper {
-            position: relative;
-            width: 0; overflow: hidden; opacity: 0;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
-            display: flex; align-items: center;
-        }
-        .search-input-wrapper.open {
-            width: 250px; /* 展开宽度，对应绿框 */
-            opacity: 1;
-        }
+        /* --- 【极简矢量搜索栏】 --- */
+        .header-search-bar { display: flex; justify-content: flex-end; align-items: center; padding: 20px 40px; max-width: 1000px; margin: 0 auto; }
         
-        .search-input-wrapper input {
-            width: 100%; padding: 10px 15px 10px 35px; /* 左侧留出放大镜位置 */
-            background: #fff; color: #333;
-            border: 2px solid var(--v-red); border-radius: 20px;
-            font-size: 14px; font-family: sans-serif;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            outline: none; transition: 0.3s;
-        }
-        .search-input-wrapper input:focus { border-color: var(--v-orange); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .search-input-wrapper { position: relative; width: 0; overflow: hidden; opacity: 0; transition: width 0.4s ease, opacity 0.3s; display: flex; align-items: center; }
+        .search-input-wrapper.open { width: 280px; opacity: 1; }
+        .search-input-wrapper input { width: 100%; padding: 10px 40px 10px 15px; background: #fff; border: 2px solid var(--v-red); border-radius: 4px; outline: none; }
 
-        /* 输入框内小放大镜图标 */
-        .search-inner-icon {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            color: rgba(187, 62, 0, 0.4); font-size: 14px;
-            pointer-events: none; /* 防止遮挡输入点击 */
-        }
+        /* 极简放大镜图标绘制 */
+        .icon-search { width: 20px; height: 20px; position: relative; cursor: pointer; transition: 0.3s; }
+        .icon-search .circle { width: 14px; height: 14px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
+        .icon-search .line { width: 2.5px; height: 8px; background: var(--v-red); position: absolute; bottom: -2px; right: -1px; transform: rotate(-45deg); }
+        #search-toggle { padding: 10px; z-index: 51; display: flex; align-items: center; }
+        #search-toggle:hover .icon-search .circle, #search-toggle:hover .icon-search .line { background: var(--v-orange); border-color: var(--v-orange); }
 
-        /* 右上角独立放大镜图标按钮 */
-        #search-toggle {
-            cursor: pointer; color: var(--v-red); font-size: 1.5em; 
-            transition: 0.3s; padding: 10px; margin-left: -5px; z-index: 51;
-            box-sizing: content-box; display: inline-flex; align-items: center; justify-content: center;
-        }
-        #search-toggle:hover { color: var(--v-orange); transform: scale(1.1); }
-        
-        /* 搜索框内的确认按钮 */
-        #search-submit-btn {
-            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; color: var(--v-red); font-weight: bold; font-size: 12px;
-            cursor: pointer; padding: 4px;
-        }
-
-        /* --- 主视图容器：确保顶部留白一致 --- */
+        /* 视图容器 */
         #view-container { padding: 0 40px 40px 40px; box-sizing: border-box; }
+        .loader-wrapper { display: flex; justify-content: center; align-items: center; height: 60vh; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #eee; border-top: 3px solid var(--v-red); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* 加载 Spinner */
-        .loader-wrapper { display: flex; justify-content: center; align-items: center; height: 70vh; }
-        .spinner { width: 35px; height: 35px; border: 3px solid rgba(255, 255, 255, 0.2); border-top: 3px solid var(--v-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- 九宫格卡片通用样式 --- */
+        /* 九宫格布局 */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .grid-item { background: var(--card); border-radius: 12px; transition: 0.3s; border-left: 6px solid var(--v-orange); cursor: pointer; }
-        .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .grid-item { background: var(--card); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; border-left: 6px solid var(--v-orange); cursor: pointer; overflow: hidden; }
+        .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         
-        /* 1. 首页标签卡片风格 */
-        .label-grid-item { padding: 25px; display: flex; flex-direction: column; }
-        .label-grid-item .label-title { font-family: 'Noto Serif SC', serif; font-size: 1.5em; color: var(--v-green); margin-bottom: 12px; }
-        .label-grid-item ul { list-style: none; padding: 0; margin: 0; font-size: 13px; color: #666; }
-        .label-grid-item li { margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; }
+        /* 搜索结果卡片 */
+        .search-grid-item { padding: 25px; border-left-color: var(--v-red); }
+        .search-result-title { font-family: 'Noto Serif SC', serif; font-size: 1.3em; color: var(--v-green); margin-bottom: 12px; }
+        .search-result-body-preview { color: #555; line-height: 1.8; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+        .search-highlight { background-color: var(--highlight); color: #000; padding: 0 2px; font-weight: bold; border-radius: 2px; }
 
-        /* 2. 【核心变动：搜索结果卡片风格】 --- */
-        .search-grid-item { padding: 20px 25px 25px 25px; border-left-color: var(--v-red); display: flex; flex-direction: column; }
-        .search-grid-item .search-result-title { font-family: 'Noto Serif SC', serif; font-size: 1.3em; color: var(--v-green); margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .search-grid-item .search-result-body-preview { 
-            color: #555; line-height: 1.6; font-size: 14px; 
-            /* 【核心点：上限5行】 */
-            display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
-            word-break: break-all;
-        }
-
-        /* 【核心点：高光效果】 */
-        .search-highlight { background-color: var(--highlight); font-weight: bold; border-radius: 2px; color: #000; padding: 0 1px; }
-
-        /* 其他布局样式不变 */
-        .list-view h2 { font-family: 'Noto Serif SC', serif; color: #fff; margin-bottom: 25px; margin-top: 10px; }
-        .title-card { background: #fff; border-radius: 8px; padding: 18px 25px; margin-bottom: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; border-left: 5px solid var(--v-red); }
-        .title-card:hover { background: #fdfaf5; transform: scale(1.005); }
-        .title-card h3 { margin: 0; font-family: 'Noto Serif SC', serif; font-size: 1.2em; color: var(--v-green); }
-
-        .article-view { max-width: 800px; margin: 10px auto; background: #fff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .article-view h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; }
-        .article-content { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; word-break: break-word; }
-        
-        .result-info { color: white; margin-bottom: 25px; font-size: 14px; opacity: 0.8; }
+        .list-view h2 { font-family: 'Noto Serif SC', serif; color: #fff; margin-bottom: 20px; }
+        .article-view { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
+        .article-view h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .article-content { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div id="site-logo-container" onclick="showHome()">
-            <div class="knot"></div>
-            <div class="knot-line"></div>
+            <div class="knot"></div><div class="knot-line"></div>
             <div class="paper-tag"><div class="site-name-v">折立</div></div>
         </div>
         <div class="sidebar-nav">
@@ -149,16 +80,13 @@
     <div class="main-content">
         <div class="header-search-bar">
             <div class="search-input-wrapper" id="search-wrapper">
-                <span class="search-inner-icon">🔍</span>
-                <input type="text" id="search-keywords" placeholder="输入搜索词..." onkeypress="handleSearch(event)">
-                <button id="search-submit-btn" onclick="executeSearch()">Go</button>
+                <input type="text" id="search-keywords" placeholder="搜索笔记..." onkeypress="if(event.key==='Enter')executeSearch()">
             </div>
-            <div id="search-toggle" onclick="toggleSearch()" title="点击搜索">🔍</div>
+            <div id="search-toggle" onclick="toggleSearch()">
+                <div class="icon-search"><div class="circle"></div><div class="line"></div></div>
+            </div>
         </div>
-
-        <div id="view-container">
-            <div class="loader-wrapper"><div class="spinner"></div></div>
-        </div>
+        <div id="view-container"></div>
     </div>
 
     <script>
@@ -166,100 +94,65 @@
         let allIssues = [];
 
         async function init() {
+            document.getElementById('view-container').innerHTML = '<div class="loader-wrapper"><div class="spinner"></div></div>';
             try {
                 const res = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
-                if (!res.ok) throw new Error();
                 allIssues = await res.json();
                 showHome();
-            } catch (e) {
-                document.getElementById('view-container').innerHTML = '<div class="article-view"><h1>同步中断</h1></div>';
-            }
+            } catch (e) { console.error(e); }
         }
-
-        // --- 【核心交互：搜索框展开与缩回】 ---
-        const sToggle = document.getElementById('search-toggle');
-        const sWrapper = document.getElementById('search-wrapper');
-        const sInput = document.getElementById('search-keywords');
 
         function toggleSearch() {
-            if (sWrapper.classList.contains('open')) {
-                // 缩回
-                sWrapper.classList.remove('open');
-                sToggle.innerHTML = '🔍'; // 恢复图标
-            } else {
-                // 展开
-                sWrapper.classList.add('open');
-                sInput.focus();
-                sToggle.innerHTML = '×'; // 换成关闭符号
-            }
+            const w = document.getElementById('search-wrapper');
+            const isOpen = w.classList.contains('open');
+            if(!isOpen) { w.classList.add('open'); document.getElementById('search-keywords').focus(); }
+            else { executeSearch(); }
         }
 
-        function handleSearch(e) { if(e.key === 'Enter') executeSearch(); }
-
-        // --- 【核心逻辑：搜索结果九宫格生成】 ---
         function executeSearch() {
-            const keywords = sInput.value.trim();
-            if (!keywords) return;
-            // 縮回搜索框
-            toggleSearch();
-
+            const kw = document.getElementById('search-keywords').value.trim();
+            if(!kw) { document.getElementById('search-wrapper').classList.remove('open'); return; }
+            
             const container = document.getElementById('view-container');
-            container.innerHTML = `<div class="list-view"><h2>搜索：${keywords}</h2></div><div class="loader-wrapper"><div class="spinner"></div></div>`;
+            container.innerHTML = `<div class="list-view"><h2>搜索结果：${kw}</h2></div>`;
+            
+            const regex = new RegExp(`(${kw})`, 'gi');
+            const filtered = allIssues.filter(i => (i.title+i.body).match(regex));
 
-            // 搜索逻辑
-            const regex = new RegExp(`(${escapeRegExp(keywords)})`, 'gi');
-            const filtered = allIssues.filter(i => {
-                return (i.title && i.title.match(regex)) || (i.body && i.body.match(regex));
-            });
+            let html = `<div class="grid-container">`;
+            filtered.forEach(item => {
+                const hTitle = item.title.replace(regex, '<span class="search-highlight">$1</span>');
+                // 【精准定位关键词语境】
+                const hBody = getSmartPreview(item.body || '', kw, regex);
 
-            setTimeout(() => {
-                container.innerHTML = `
-                    <div class="list-view">
-                        <h2>搜索结果</h2>
-                        <div class="result-info">关键词: <span class="search-highlight">${keywords}</span> | 找到 ${filtered.length} 篇相关笔记</div>
+                html += `
+                    <div class="grid-item search-grid-item" onclick="showArticle(${item.number}, '${kw}')">
+                        <div class="search-result-title">${hTitle}</div>
+                        <div class="search-result-body-preview">${hBody}</div>
                     </div>`;
-                
-                if(filtered.length === 0) {
-                    container.innerHTML += `<div class="article-view"><h1>未找到相关内容</h1><div class="article-content">请尝试输入其他关键词试试看。</div></div>`;
-                    return;
-                }
-
-                // 渲染搜索结果九宫格
-                let html = `<div class="grid-container">`;
-                filtered.forEach(item => {
-                    const hTitle = highlightText(item.title, regex);
-                    const hBody = highlightAndSliceBody(item.body, regex);
-
-                    html += `
-                        <div class="grid-item search-grid-item" onclick="showArticle(${item.number}, true)">
-                            <div class="search-result-title">${hTitle}</div>
-                            <div class="search-result-body-preview">${hBody || '无内容预览'}</div>
-                        </div>`;
-                });
-                container.innerHTML += html + `</div>`;
-            }, 300); // 增加一点自然的延迟
+            });
+            container.innerHTML += html + '</div>';
+            document.getElementById('search-wrapper').classList.remove('open');
         }
 
-        // 通用文本高光
-        function highlightText(text, regex) {
-            if(!text) return '';
-            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        // --- 【核心预览算法】 ---
+        function getSmartPreview(content, kw, regex) {
+            const index = content.toLowerCase().indexOf(kw.toLowerCase());
+            if (index === -1) return content.substring(0, 150); // 找不到就开头
+
+            // 向前向后找语境，大概取关键词前50个字和后100个字
+            const start = Math.max(0, index - 50);
+            const end = Math.min(content.length, index + 150);
+            let snippet = content.substring(start, end);
+            
+            if (start > 0) snippet = "..." + snippet;
+            if (end < content.length) snippet = snippet + "...";
+
+            // 再次加上高光
+            return snippet.replace(regex, '<span class="search-highlight">$1</span>');
         }
 
-        // 高光并切出5行预览
-        function highlightAndSliceBody(body, regex) {
-            if(!body) return '';
-            // 1. 先进行高光替换，保留HTML标签
-            let highlighted = body.replace(regex, '<span class="search-highlight">$1</span>');
-            // 2. 利用 CSS -webkit-line-clamp 进行硬切断，所以这里不需要在JS里做繁琐的截断和HTML标签修复
-            return highlighted;
-        }
-
-        function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-
-        // 其他页面显示逻辑不变
         function showHome() {
-            document.getElementById('view-container').innerHTML = '<div class="loader-wrapper"><div class="spinner"></div></div>';
             const container = document.getElementById('view-container');
             const labelsMap = {};
             allIssues.forEach(item => {
@@ -268,42 +161,35 @@
                     if (labelsMap[l.name].length < 5) labelsMap[l.name].push(item.title);
                 });
             });
-
-            setTimeout(() => {
-                let html = `<div class="grid-container">`;
-                for (const [name, titles] of Object.entries(labelsMap)) {
-                    html += `
-                        <div class="grid-item label-grid-item" onclick="showCategory('${name}')">
-                            <div class="label-title"># ${name}</div>
-                            <ul class="preview-list">${titles.map(t => `<li>${t}</li>`).join('')}</ul>
-                        </div>`;
-                }
-                container.innerHTML = html + `</div>`;
-            }, 100);
+            let html = `<div class="grid-container">`;
+            for (const [name, titles] of Object.entries(labelsMap)) {
+                html += `
+                    <div class="grid-item" style="padding:25px" onclick="showCategory('${name}')">
+                        <div style="font-family:'Noto Serif SC',serif;font-size:1.5em;color:var(--v-green);margin-bottom:12px"># ${name}</div>
+                        <ul style="list-style:none;padding:0;margin:0;font-size:13px;color:#666">
+                            ${titles.map(t => `<li style="margin-bottom:6px;border-bottom:1px solid #f0f0f0">${t}</li>`).join('')}
+                        </ul>
+                    </div>`;
+            }
+            container.innerHTML = html + `</div>`;
         }
 
-        function showCategory(labelName) {
+        function showCategory(ln) {
             const container = document.getElementById('view-container');
-            const filtered = allIssues.filter(i => i.labels.some(l => l.name === labelName));
-            let html = `<div class="list-view"><h2>分类：${labelName}</h2>`;
+            const filtered = allIssues.filter(i => i.labels.some(l => l.name === ln));
+            let html = `<div class="list-view"><h2>分类：${ln}</h2>`;
             filtered.forEach(item => {
                 html += `<div class="title-card" onclick="showArticle(${item.number})"><h3>${item.title}</h3><span>→</span></div>`;
             });
             container.innerHTML = html + `</div>`;
         }
 
-        function showArticle(number, fromSearch = false) {
+        function showArticle(num, kw = null) {
             const container = document.getElementById('view-container');
-            const item = allIssues.find(i => i.number === number);
-            
-            // 如果从搜索进入，在全页阅读中也展示关键词高光（可选，建议保留增强一致性）
-            let keywords = sInput.value.trim();
+            const item = allIssues.find(i => i.number === num);
             let body = item.body || '暂无内容';
-            if(fromSearch && keywords) {
-                const regex = new RegExp(`(${escapeRegExp(keywords)})`, 'gi');
-                body = highlightText(body, regex);
-            }
-
+            if(kw) body = body.replace(new RegExp(`(${kw})`, 'gi'), '<span class="search-highlight">$1</span>');
+            
             container.innerHTML = `
                 <div class="article-view">
                     <h1>${item.title}</h1>
