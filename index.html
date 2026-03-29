@@ -3,67 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>折立 - 精准搜索版</title>
+    <title>折立</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
             --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
             --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff;
-            --highlight: #ffee58;
+            --hl: #ffee58;
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow: hidden; }
         
-        /* 侧边栏 */
+        /* Sidebar & Navigation */
         .sidebar { position: fixed; top: 0; left: 0; width: 80px; height: 100vh; background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
-        .knot-line { width: 1.5px; height: 18px; background: var(--v-red); margin: -1px 0; }
-        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; transform: rotate(-1.5deg); display: flex; justify-content: center; width: 32px; box-sizing: border-box; }
+        .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+        .knot::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(255,255,255,0.4); }
+        .knot-line { width: 1.5px; height: 18px; background: var(--v-red); margin: -1px 0; z-index: 2; }
+        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 32px; box-sizing: border-box; }
         .site-name-v { writing-mode: vertical-rl; color: #2c1e14; font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; text-align: center; }
 
-        /* 底部导航 */
-        .sidebar-nav { margin-top: auto; margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px; }
-        .nav-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 8px; }
-        .nav-item div { writing-mode: vertical-rl; color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 14px; letter-spacing: 2px; opacity: 0.6; }
+        .sidebar-nav { margin-top: auto; margin-bottom: 30px; display: flex; flex-direction: column; gap: 20px; }
+        .nav-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 10px; border-radius: 8px; transition: 0.3s; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item div { writing-mode: vertical-rl; color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 16px; font-weight: 900; letter-spacing: 2px; opacity: 0.8; }
         .nav-item.active div { color: var(--v-orange); opacity: 1; }
 
         .main-content { margin-left: 80px; flex: 1; overflow-y: auto; height: 100vh; box-sizing: border-box; }
 
-        /* --- 【极简矢量搜索栏】 --- */
-        .header-search-bar { display: flex; justify-content: flex-end; align-items: center; padding: 20px 40px; max-width: 1000px; margin: 0 auto; }
+        /* Header & Search */
+        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 40px; max-width: 1100px; margin: 0 auto; position: relative; }
+        .search-box { position: relative; width: 0; overflow: hidden; opacity: 0; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; }
+        .search-box.open { width: 280px; opacity: 1; }
+        .search-box input { width: 100%; padding: 10px 15px; background: #fff; border: 2px solid var(--v-red); border-radius: 4px; outline: none; font-size: 14px; }
         
-        .search-input-wrapper { position: relative; width: 0; overflow: hidden; opacity: 0; transition: width 0.4s ease, opacity 0.3s; display: flex; align-items: center; }
-        .search-input-wrapper.open { width: 280px; opacity: 1; }
-        .search-input-wrapper input { width: 100%; padding: 10px 40px 10px 15px; background: #fff; border: 2px solid var(--v-red); border-radius: 4px; outline: none; }
+        .icon-search-v { width: 22px; height: 22px; position: relative; cursor: pointer; margin-left: 15px; }
+        .icon-search-v .c { width: 15px; height: 15px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
+        .icon-search-v .l { width: 2.5px; height: 9px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
+        .icon-search-v:hover .c, .icon-search-v:hover .l { border-color: var(--v-orange); background: var(--v-orange); }
 
-        /* 极简放大镜图标绘制 */
-        .icon-search { width: 20px; height: 20px; position: relative; cursor: pointer; transition: 0.3s; }
-        .icon-search .circle { width: 14px; height: 14px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
-        .icon-search .line { width: 2.5px; height: 8px; background: var(--v-red); position: absolute; bottom: -2px; right: -1px; transform: rotate(-45deg); }
-        #search-toggle { padding: 10px; z-index: 51; display: flex; align-items: center; }
-        #search-toggle:hover .icon-search .circle, #search-toggle:hover .icon-search .line { background: var(--v-orange); border-color: var(--v-orange); }
-
-        /* 视图容器 */
-        #view-container { padding: 0 40px 40px 40px; box-sizing: border-box; }
-        .loader-wrapper { display: flex; justify-content: center; align-items: center; height: 60vh; }
-        .spinner { width: 30px; height: 30px; border: 3px solid #eee; border-top: 3px solid var(--v-red); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* 九宫格布局 */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .grid-item { background: var(--card); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; border-left: 6px solid var(--v-orange); cursor: pointer; overflow: hidden; }
-        .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        /* Grid UI */
+        #view-container { padding: 0 40px 40px 40px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
+        .card { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 6px solid var(--v-orange); cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .card.search-mode { border-left-color: var(--v-red); }
         
-        /* 搜索结果卡片 */
-        .search-grid-item { padding: 25px; border-left-color: var(--v-red); }
-        .search-result-title { font-family: 'Noto Serif SC', serif; font-size: 1.3em; color: var(--v-green); margin-bottom: 12px; }
-        .search-result-body-preview { color: #555; line-height: 1.8; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
-        .search-highlight { background-color: var(--highlight); color: #000; padding: 0 2px; font-weight: bold; border-radius: 2px; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.5em; color: var(--v-green); margin-bottom: 15px; }
+        .card-list { list-style: none; padding: 0; margin: 0; font-size: 13px; color: #666; }
+        .card-list li { margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-preview { color: #555; line-height: 1.7; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+        .hl { background: var(--hl); color: #000; font-weight: bold; padding: 0 2px; }
 
-        .list-view h2 { font-family: 'Noto Serif SC', serif; color: #fff; margin-bottom: 20px; }
-        .article-view { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
-        .article-view h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .article-content { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; }
+        /* Article UI */
+        .article { max-width: 850px; margin: 0 auto; background: #fff; padding: 45px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .article h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; font-size: 2.2em; }
+        .article-body { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; word-break: break-word; }
+
+        .loading { display: flex; justify-content: center; align-items: center; height: 50vh; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #eee; border-top: 3px solid var(--v-red); border-radius: 50%; animation: s 1s linear infinite; }
+        @keyframes s { 100% { transform: rotate(360deg); } }
+        .res-info { color: white; margin: 0 auto 25px; max-width: 1100px; font-size: 14px; opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -74,16 +73,17 @@
         </div>
         <div class="sidebar-nav">
             <div class="nav-item active" id="nav-cat" onclick="showHome()"><div>分类</div></div>
+            <div class="nav-item" id="nav-recent" onclick="showRecent()"><div>最新</div></div>
         </div>
     </div>
     
     <div class="main-content">
-        <div class="header-search-bar">
-            <div class="search-input-wrapper" id="search-wrapper">
-                <input type="text" id="search-keywords" placeholder="搜索笔记..." onkeypress="if(event.key==='Enter')executeSearch()">
+        <div class="header-tools">
+            <div class="search-box" id="sb">
+                <input type="text" id="sk" placeholder="搜索关键词..." onkeypress="if(event.key==='Enter')exeSearch()">
             </div>
-            <div id="search-toggle" onclick="toggleSearch()">
-                <div class="icon-search"><div class="circle"></div><div class="line"></div></div>
+            <div class="icon-search-v" onclick="toggleS()">
+                <div class="c"></div><div class="l"></div>
             </div>
         </div>
         <div id="view-container"></div>
@@ -91,111 +91,100 @@
 
     <script>
         const repo = 'skakla/mmkkl';
-        let allIssues = [];
+        let data = [];
 
         async function init() {
-            document.getElementById('view-container').innerHTML = '<div class="loader-wrapper"><div class="spinner"></div></div>';
+            const v = document.getElementById('view-container');
+            v.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             try {
-                const res = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
-                allIssues = await res.json();
+                const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
+                data = await r.json();
                 showHome();
-            } catch (e) { console.error(e); }
+            } catch (e) { v.innerHTML = '<div class="article"><h1>Error</h1></div>'; }
         }
 
-        function toggleSearch() {
-            const w = document.getElementById('search-wrapper');
-            const isOpen = w.classList.contains('open');
-            if(!isOpen) { w.classList.add('open'); document.getElementById('search-keywords').focus(); }
-            else { executeSearch(); }
+        function setNav(id) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(id) document.getElementById(id).classList.add('active');
         }
 
-        function executeSearch() {
-            const kw = document.getElementById('search-keywords').value.trim();
-            if(!kw) { document.getElementById('search-wrapper').classList.remove('open'); return; }
-            
-            const container = document.getElementById('view-container');
-            container.innerHTML = `<div class="list-view"><h2>搜索结果：${kw}</h2></div>`;
-            
-            const regex = new RegExp(`(${kw})`, 'gi');
-            const filtered = allIssues.filter(i => (i.title+i.body).match(regex));
+        function toggleS() {
+            const b = document.getElementById('sb');
+            if(!b.classList.contains('open')) { b.classList.add('open'); document.getElementById('sk').focus(); }
+            else { exeSearch(); }
+        }
 
-            let html = `<div class="grid-container">`;
-            filtered.forEach(item => {
-                const hTitle = item.title.replace(regex, '<span class="search-highlight">$1</span>');
-                // 【精准定位关键词语境】
-                const hBody = getSmartPreview(item.body || '', kw, regex);
+        function exeSearch() {
+            const k = document.getElementById('sk').value.trim();
+            if(!k) { document.getElementById('sb').classList.remove('open'); return; }
+            setNav(null);
+            const v = document.getElementById('view-container');
+            const reg = new RegExp(`(${k})`, 'gi');
+            const res = data.filter(i => (i.title + i.body).match(reg));
 
-                html += `
-                    <div class="grid-item search-grid-item" onclick="showArticle(${item.number}, '${kw}')">
-                        <div class="search-result-title">${hTitle}</div>
-                        <div class="search-result-body-preview">${hBody}</div>
-                    </div>`;
+            let h = `<div class="res-info">找到 ${res.length} 条关于 <span class="hl">${k}</span> 的结果</div><div class="grid">`;
+            res.forEach(i => {
+                const t = i.title.replace(reg, '<span class="hl">$1</span>');
+                const p = getP(i.body || '', k, reg);
+                h += `<div class="card search-mode" onclick="showA(${i.number},'${k}')"><div class="card-h">${t}</div><div class="card-preview">${p}</div></div>`;
             });
-            container.innerHTML += html + '</div>';
-            document.getElementById('search-wrapper').classList.remove('open');
+            v.innerHTML = h + '</div>';
+            document.getElementById('sb').classList.remove('open');
         }
 
-        // --- 【核心预览算法】 ---
-        function getSmartPreview(content, kw, regex) {
-            const index = content.toLowerCase().indexOf(kw.toLowerCase());
-            if (index === -1) return content.substring(0, 150); // 找不到就开头
-
-            // 向前向后找语境，大概取关键词前50个字和后100个字
-            const start = Math.max(0, index - 50);
-            const end = Math.min(content.length, index + 150);
-            let snippet = content.substring(start, end);
-            
-            if (start > 0) snippet = "..." + snippet;
-            if (end < content.length) snippet = snippet + "...";
-
-            // 再次加上高光
-            return snippet.replace(regex, '<span class="search-highlight">$1</span>');
+        function getP(c, k, r) {
+            const idx = c.toLowerCase().indexOf(k.toLowerCase());
+            if(idx === -1) return c.substring(0, 150).replace(r, '<span class="hl">$1</span>');
+            const s = Math.max(0, idx - 40), e = Math.min(c.length, idx + 120);
+            return (s > 0 ? '...' : '') + c.substring(s, e).replace(r, '<span class="hl">$1</span>') + (e < c.length ? '...' : '');
         }
 
         function showHome() {
-            const container = document.getElementById('view-container');
-            const labelsMap = {};
-            allIssues.forEach(item => {
-                item.labels.forEach(l => {
-                    if (!labelsMap[l.name]) labelsMap[l.name] = [];
-                    if (labelsMap[l.name].length < 5) labelsMap[l.name].push(item.title);
-                });
-            });
-            let html = `<div class="grid-container">`;
-            for (const [name, titles] of Object.entries(labelsMap)) {
-                html += `
-                    <div class="grid-item" style="padding:25px" onclick="showCategory('${name}')">
-                        <div style="font-family:'Noto Serif SC',serif;font-size:1.5em;color:var(--v-green);margin-bottom:12px"># ${name}</div>
-                        <ul style="list-style:none;padding:0;margin:0;font-size:13px;color:#666">
-                            ${titles.map(t => `<li style="margin-bottom:6px;border-bottom:1px solid #f0f0f0">${t}</li>`).join('')}
-                        </ul>
-                    </div>`;
+            setNav('nav-cat');
+            const v = document.getElementById('view-container');
+            const m = {};
+            data.forEach(i => i.labels.forEach(l => {
+                if(!m[l.name]) m[l.name] = [];
+                if(m[l.name].length < 5) m[l.name].push(i.title);
+            }));
+            let h = '<div class="grid">';
+            for(const [n, ts] of Object.entries(m)) {
+                h += `<div class="card" onclick="showC('${n}')"><div class="card-h"># ${n}</div><ul class="card-list">${ts.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
             }
-            container.innerHTML = html + `</div>`;
+            v.innerHTML = h + '</div>';
         }
 
-        function showCategory(ln) {
-            const container = document.getElementById('view-container');
-            const filtered = allIssues.filter(i => i.labels.some(l => l.name === ln));
-            let html = `<div class="list-view"><h2>分类：${ln}</h2>`;
-            filtered.forEach(item => {
-                html += `<div class="title-card" onclick="showArticle(${item.number})"><h3>${item.title}</h3><span>→</span></div>`;
+        function showRecent() {
+            setNav('nav-recent');
+            const v = document.getElementById('view-container');
+            let h = '<div class="grid">';
+            data.forEach(i => {
+                const p = (i.body || '').substring(0, 120);
+                h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div><div class="card-preview">${p}...</div></div>`;
             });
-            container.innerHTML = html + `</div>`;
+            v.innerHTML = h + '</div>';
         }
 
-        function showArticle(num, kw = null) {
-            const container = document.getElementById('view-container');
-            const item = allIssues.find(i => i.number === num);
-            let body = item.body || '暂无内容';
-            if(kw) body = body.replace(new RegExp(`(${kw})`, 'gi'), '<span class="search-highlight">$1</span>');
-            
-            container.innerHTML = `
-                <div class="article-view">
-                    <h1>${item.title}</h1>
-                    <div class="article-content">${body}</div>
-                </div>`;
-            container.scrollTo(0, 0);
+        function showC(ln) {
+            setNav(null);
+            const v = document.getElementById('view-container');
+            const f = data.filter(i => i.labels.some(l => l.name === ln));
+            let h = `<div class="res-info" style="font-size:1.8em; font-family:'Noto Serif SC',serif">分类：${ln}</div><div class="grid">`;
+            f.forEach(i => {
+                const p = (i.body || '').substring(0, 120);
+                h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div><div class="card-preview">${p}...</div></div>`;
+            });
+            v.innerHTML = h + '</div>';
+        }
+
+        function showA(n, k = null) {
+            setNav(null);
+            const v = document.getElementById('view-container');
+            const i = data.find(x => x.number === n);
+            let b = i.body || '';
+            if(k) b = b.replace(new RegExp(`(${k})`, 'gi'), '<span class="hl">$1</span>');
+            v.innerHTML = `<div class="article"><h1>${i.title}</h1><div class="article-body">${b}</div></div>`;
+            v.scrollTo(0,0);
         }
 
         init();
