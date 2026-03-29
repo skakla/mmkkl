@@ -14,7 +14,6 @@
         }
         body, html { margin: 0; padding: 0; background: var(--v-gray); font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* 侧边栏 */
         .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
@@ -31,16 +30,16 @@
         .main-content { margin-left: var(--side-w); min-height: 100vh; }
         .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 30px; max-width: 1100px; margin: 0 auto; height: 50px; position: relative; }
 
-        /* 搜索栏：完全不透明且定位固定 */
+        /* 搜索框修正：确保不透明且不飞出 */
         .search-container { 
-            display: none; align-items: center; background: #ffffff !important; 
+            display: none; align-items: center; background: #fff !important; 
             border: 2px solid var(--v-red); border-radius: 8px; 
-            padding: 4px; position: absolute; right: 85px; width: 240px; z-index: 2000;
+            padding: 4px; position: absolute; right: 85px; width: 220px; z-index: 2000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         .search-container.show { display: flex; }
-        .search-container input { border: none; outline: none; padding: 6px 10px; flex: 1; font-size: 14px; background: #fff; color: #000; }
-        .search-btn { background: var(--v-red); color: white; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .search-container input { border: none; outline: none; padding: 6px; flex: 1; font-size: 14px; background: #fff; width: 50px; }
+        .search-btn { background: var(--v-red); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; flex-shrink: 0; }
 
         .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .icon-search-v { width: 18px; height: 18px; position: relative; }
@@ -48,31 +47,31 @@
         .icon-search-v .l { width: 3px; height: 7px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
 
         #view-container { padding: 0 40px 40px 40px; }
-
-        /* 列表布局 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); font-weight: 900; margin: 0; }
-        
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: none; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.3em; color: var(--v-green); font-weight: 900; margin: 0; }
         .card-list { list-style: none; padding: 0; margin: 14px 0 0 0; border-top: 1.5px solid #eee; padding-top: 12px; }
         .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* 搜索预览：强制5行高度限制 */
+        /* 搜索预览：严格5行显示 */
         .search-preview { 
             margin-top: 12px; font-size: 14px; color: var(--text-sub); 
-            line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 5; 
-            -webkit-box-orient: vertical; overflow: hidden; border-top: 1.5px solid #eee; padding-top: 10px;
-            max-height: 8em; /* 兜底高度 */
+            line-height: 1.5; height: 7.5em; overflow: hidden;
+            display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+            border-top: 1.5px solid #eee; padding-top: 10px;
         }
 
-        /* 文章与图片：解决拉伸 */
+        /* 文章内容：彻底解决拉伸问题 */
         .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
         .article h1 { font-family: 'Noto Serif SC'; color: var(--v-red); margin-top: 0; }
-        .post-body { line-height: 1.9; white-space: pre-wrap; color: var(--text-main); font-weight: 500; font-size: 17px; }
+        .post-body { line-height: 1.8; white-space: pre-wrap; color: var(--text-main); font-weight: 500; }
         .post-body img { 
-            max-width: 100%; height: auto; display: block; 
-            margin: 25px auto; border-radius: 8px; 
-            object-fit: contain; /* 保持比例 */
+            display: block; 
+            max-width: 100%; 
+            height: auto; /* 关键：不要设置固定高度或100%高度 */
+            margin: 20px auto; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; }
@@ -87,7 +86,7 @@
             .main-content { margin-left: 0; padding-bottom: 80px; }
             #view-container { padding: 0 20px 20px 20px; }
             .grid { grid-template-columns: 1fr; }
-            .search-container { right: 60px; width: 180px; }
+            .search-container { right: 60px; width: 160px; }
         }
     </style>
 </head>
@@ -105,7 +104,7 @@
     <div class="main-content">
         <div class="header-tools">
             <div class="search-container" id="sc">
-                <input type="text" id="sk" placeholder="搜索内容..." onkeypress="if(event.key==='Enter')exeSearch()">
+                <input type="text" id="sk" placeholder="搜..." onkeypress="if(event.key==='Enter')exeSearch()">
                 <button class="search-btn" onclick="exeSearch()">搜索</button>
             </div>
             <div class="search-trigger" onclick="toggleS()">
@@ -122,11 +121,13 @@
 
         async function init() {
             try {
-                const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
+                // 添加时间戳防止缓存
+                const r = await fetch(`https://api.github.com/repos/${repo}/issues?state=open&per_page=100&t=${Date.now()}`);
+                if (!r.ok) throw new Error();
                 data = await r.json();
                 renderHome();
             } catch (e) {
-                view.innerHTML = '<div style="color:white;text-align:center;padding:50px;">数据加载失败，请刷新</div>';
+                view.innerHTML = '<div style="color:white;text-align:center;padding:50px;font-weight:900;">⚠️ 暂时无法连接至 GitHub<br><small style="font-weight:400;opacity:0.8;">请检查网络或稍后再试</small></div>';
             }
         }
 
@@ -174,8 +175,7 @@
         function renderArticle(n, k = null) {
             const i = data.find(x => x.number === n);
             if(!i) return;
-            let b = i.body || '';
-            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1">').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            let b = (i.body || '').replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1">');
             if(k) {
                 const safeK = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 b = b.replace(new RegExp(`(${safeK})`, 'gi'), '<span class="hl">$1</span>');
@@ -193,33 +193,27 @@
             const k = document.getElementById('sk').value.trim();
             if(!k) return;
             
-            // 安全转义搜索词，防止正则报错
             const safeK = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const reg = new RegExp(`(${safeK})`, 'gi');
             
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
-            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} 结果</div><div class="grid">`;
+            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold; font-size:14px;">${res.length} 个结果</div><div class="grid">`;
             
             res.forEach(i => {
+                let pText = (i.body || "").replace(/!\[.*?\]\(.*?\)/g, "[图片]").replace(/\n/g, " ");
+                const idx = pText.toLowerCase().indexOf(k.toLowerCase());
                 let preview = "";
-                const bodyText = (i.body || "").replace(/!\[.*?\]\(.*?\)/g, "[图片]").replace(/\n/g, " ");
-                const idx = bodyText.toLowerCase().indexOf(k.toLowerCase());
-                
-                if (idx !== -1) {
-                    const start = Math.max(0, idx - 40);
-                    const end = Math.min(bodyText.length, idx + 100);
-                    preview = (start > 0 ? "..." : "") + bodyText.substring(start, end) + (end < bodyText.length ? "..." : "");
+                if(idx !== -1) {
+                    const start = Math.max(0, idx - 30);
+                    preview = (start > 0 ? "..." : "") + pText.substring(start, start + 120) + "...";
                     preview = preview.replace(reg, '<span class="hl">$1</span>');
                 }
-
                 h += `<div class="card" onclick="renderArticle(${i.number},'${k}')">
-                        <div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div>
-                        ${preview ? `<div class="search-preview">${preview}</div>` : ''}
-                      </div>`;
+                    <div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div>
+                    ${preview ? `<div class="search-preview">${preview}</div>` : ''}
+                </div>`;
             });
-            
-            h += '</div>';
-            updateUI(h);
+            updateUI(h + '</div>');
             document.getElementById('sc').classList.remove('show');
         }
 
