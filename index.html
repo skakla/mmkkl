@@ -4,72 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>折立</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
             --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff; --hl: #ffee58;
         }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow-x: hidden; }
         
-        /* 侧边栏 */
-        .sidebar { position: fixed; top: 0; left: 0; width: 80px; height: 100vh; background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 80px; height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
-        .knot::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(255,255,255,0.4); }
+        .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
+        .knot::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border: 1px solid rgba(255,255,255,0.4); }
         .knot-line { width: 1.5px; height: 18px; background: var(--v-red); margin: -1px 0; z-index: 2; }
         .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 32px; box-sizing: border-box; }
         .site-name-v { writing-mode: vertical-rl; color: #2c1e14; font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
 
-        /* 左下角横向标签 */
-        .sidebar-nav { margin-top: auto; margin-bottom: 30px; display: flex; flex-direction: column; gap: 20px; align-items: center; width: 100%; }
-        .nav-item { cursor: pointer; opacity: 0.6; transition: 0.3s; width: 100%; text-align: center; }
-        .nav-item div { color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 900; }
+        .sidebar-nav { margin-top: auto; margin-bottom: 35px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .nav-item { cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
+        .nav-item div { color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 900; writing-mode: horizontal-tb; }
         .nav-item.active { opacity: 1; }
         .nav-item.active div { color: var(--v-orange); }
 
         .main-content { margin-left: 80px; min-height: 100vh; }
-        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 40px; max-width: 1100px; margin: 0 auto; height: 50px; }
+        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 30px; max-width: 1100px; margin: 0 auto; height: 50px; position: relative; }
 
-        /* 搜索框：解决iPad切割问题 */
-        .search-wrapper { display: flex; align-items: center; overflow: visible; }
+        /* 搜索框修正 */
         .search-container { 
             display: flex; align-items: center; background: #fff; 
             border: 2px solid var(--v-red); border-radius: 8px; 
             padding: 3px; visibility: hidden; opacity: 0; 
-            transition: 0.25s ease; transform: translateX(10px);
+            transition: 0.3s; position: absolute; right: 85px; width: 200px;
         }
-        .search-container.show { visibility: visible; opacity: 1; transform: translateX(0); }
-        .search-container input { border: none; outline: none; padding: 6px 12px; width: 160px; font-size: 14px; background: transparent; }
+        .search-container.show { visibility: visible; opacity: 1; }
+        .search-container input { border: none; outline: none; padding: 6px; flex: 1; font-size: 14px; min-width: 0; }
         .search-btn { background: var(--v-red); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
 
-        /* 触发器沉底效果 */
-        .search-trigger {
-            width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; cursor: pointer; margin-left: 15px; transition: 0.1s;
-        }
-        .search-trigger:active {
-            background: rgba(0,0,0,0.1);
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
-            transform: scale(0.95);
-        }
-        .icon-search-v { width: 18px; height: 18px; position: relative; pointer-events: none; }
+        .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; }
+        .search-trigger:active { background: rgba(0,0,0,0.1); box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2); }
+        .icon-search-v { width: 18px; height: 18px; position: relative; }
         .icon-search-v .c { width: 12px; height: 12px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
         .icon-search-v .l { width: 3px; height: 7px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
 
-        /* 内容网格 */
+        /* 卡片内容：罗列题目 */
         #view-container { padding: 0 40px 40px 40px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 35px; border-left: 6px solid var(--v-orange); cursor: pointer; transition: 0.2s; display: flex; align-items: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; transition: 0.2s; }
         .card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.55em; color: var(--v-green); line-height: 1.3; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.4em; color: var(--v-green); margin-bottom: 12px; }
+        .card-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid #f0f0f0; padding-top: 10px; }
+        .card-list li { font-size: 14px; color: #666; padding: 4px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
-        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 45px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .hl { background: var(--hl); padding: 0 2px; }
-        
-        /* 经典圆环加载 */
-        .loading { display: flex; justify-content: center; padding-top: 120px; }
-        .spinner { width: 32px; height: 32px; border: 4px solid rgba(255,255,255,0.25); border-top: 4px solid var(--v-red); border-radius: 50%; animation: spin 0.9s linear infinite; }
+        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
+        .hl { background: var(--hl); }
+        .loading { display: flex; justify-content: center; padding-top: 150px; }
+        .spinner { width: 32px; height: 32px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid var(--v-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -86,14 +75,12 @@
     </div>
     <div class="main-content">
         <div class="header-tools">
-            <div class="search-wrapper">
-                <div class="search-container" id="sc">
-                    <input type="text" id="sk" placeholder="输入关键字" onkeypress="if(event.key==='Enter')exeSearch()">
-                    <button class="search-btn" onclick="exeSearch()">搜索</button>
-                </div>
-                <div class="search-trigger" onclick="toggleS()">
-                    <div class="icon-search-v"><div class="c"></div><div class="l"></div></div>
-                </div>
+            <div class="search-container" id="sc">
+                <input type="text" id="sk" placeholder="..." onkeypress="if(event.key==='Enter')exeSearch()">
+                <button class="search-btn" onclick="exeSearch()">搜索</button>
+            </div>
+            <div class="search-trigger" onclick="toggleS()">
+                <div class="icon-search-v"><div class="c"></div><div class="l"></div></div>
             </div>
         </div>
         <div id="view-container"></div>
@@ -110,12 +97,9 @@
                 const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
                 data = await r.json();
                 showNavMode();
-            } catch (e) {
-                v.innerHTML = '<div class="card"><div class="card-h">同步中断</div></div>';
-            }
+            } catch (e) { v.innerHTML = 'Error'; }
         }
 
-        // 导航模式：显示大标签入口
         function showNavMode() {
             setNav(null);
             const v = document.getElementById('view-container');
@@ -130,10 +114,16 @@
             setNav('nav-cat');
             const v = document.getElementById('view-container');
             const m = {};
-            data.forEach(i => i.labels.forEach(l => m[l.name] = true));
+            data.forEach(i => i.labels.forEach(l => {
+                if(!m[l.name]) m[l.name] = [];
+                if(m[l.name].length < 5) m[l.name].push(i.title);
+            }));
             let h = '<div class="grid">';
             for(const name in m) {
-                h += `<div class="card" onclick="showLabelPosts('${name}')"><div class="card-h"># ${name}</div></div>`;
+                h += `<div class="card" onclick="showLabelPosts('${name}')">
+                        <div class="card-h"># ${name}</div>
+                        <ul class="card-list">${m[name].map(t => `<li>${t}</li>`).join('')}</ul>
+                      </div>`;
             }
             v.innerHTML = h + '</div>';
         }
@@ -142,7 +132,7 @@
             setNav(null);
             const v = document.getElementById('view-container');
             const f = data.filter(i => i.labels.some(l => l.name === ln));
-            let h = `<div style="color:white; margin-bottom:25px; font-weight:bold; font-size:1.1em;"># ${ln}</div><div class="grid">`;
+            let h = `<div style="margin-bottom:20px; font-weight:bold;"># ${ln}</div><div class="grid">`;
             f.forEach(i => h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div></div>`);
             v.innerHTML = h + '</div>';
         }
@@ -168,7 +158,7 @@
             const v = document.getElementById('view-container');
             const reg = new RegExp(`(${k})`, 'gi');
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
-            let h = `<div style="color:white; margin-bottom:25px;">搜索结果: ${res.length}</div><div class="grid">`;
+            let h = `<div style="margin-bottom:20px;">${res.length}</div><div class="grid">`;
             res.forEach(i => h += `<div class="card" onclick="showA(${i.number},'${k}')"><div class="card-h">${i.title.replace(reg,'<span class="hl">$1</span>')}</div></div>`);
             v.innerHTML = h + '</div>';
             document.getElementById('sc').classList.remove('show');
@@ -180,7 +170,7 @@
             const i = data.find(x => x.number === n);
             let b = i.body || '';
             if(k) b = b.replace(new RegExp(`(${k})`, 'gi'), '<span class="hl">$1</span>');
-            v.innerHTML = `<div class="article"><h1 style="font-family:'Noto Serif SC'; margin-bottom:30px; color:var(--v-red);">${i.title}</h1><div style="line-height:1.9; white-space:pre-wrap; font-size:16px; color:#333;">${b}</div></div>`;
+            v.innerHTML = `<div class="article"><h1 style="font-family:'Noto Serif SC'; color:var(--v-red);">${i.title}</h1><div style="line-height:1.9; white-space:pre-wrap;">${b}</div></div>`;
             window.scrollTo(0,0);
         }
 
