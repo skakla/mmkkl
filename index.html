@@ -14,8 +14,8 @@
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* 侧边栏 - PC端默认 */
-        .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        /* 侧边栏 */
+        .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
         .knot::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border: 1px solid rgba(255,255,255,0.4); }
@@ -47,66 +47,37 @@
         .icon-search-v .c { width: 12px; height: 12px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
         .icon-search-v .l { width: 3px; height: 7px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
 
-        #view-container { padding: 0 40px 40px 40px; transition: opacity 0.1s ease-in-out; opacity: 1; }
+        #view-container { padding: 0 40px 40px 40px; transition: opacity 0.1s; opacity: 1; }
         #view-container.loading-fade { opacity: 0; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); margin-bottom: 14px; font-weight: 900; }
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; min-height: 80px; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); margin-bottom: 0; font-weight: 900; }
+        .card.has-list .card-h { margin-bottom: 14px; }
         
         .card-list { list-style: none; padding: 0; margin: 0; border-top: 1.5px solid #eee; padding-top: 12px; }
-        .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .search-snippet { 
-            font-size: 14px; color: var(--text-sub); line-height: 1.6; margin-top: 12px; 
-            display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; 
-            overflow: hidden; border-top: 1.5px solid #eee; padding-top: 12px; font-weight: 500;
-        }
-
-        /* --- 文章内容样式整合 --- */
-        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); }
-        .article h1 { font-size: 1.8em; margin-bottom: 20px; font-family:'Noto Serif SC'; color:var(--v-red); margin-top:0; }
-        .post-body { line-height: 1.9; white-space: pre-wrap; color: var(--text-main); font-weight: 500; font-size: 16px; word-break: break-word; }
-        
-        /* 支持常见的 GitHub Markdown 语法 */
-        .post-body p { margin: 15px 0; }
-        
-        /* 解析后的图片样式 */
-        .post-body img { max-width: 100% !important; height: auto !important; border-radius: 8px; margin: 15px auto; display: block; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid var(--paper); }
-        
-        /* 解析后的代码块/粗体样式 */
-        .post-body strong { font-weight: 900; color:var(--v-red); }
-        .post-body code:not(pre code) { background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: monospace; }
-        .post-body pre { background: var(--text-main); color: var(--paper); padding: 15px; border-radius: 8px; overflow-x: auto; margin: 20px 0; font-family: monospace; line-height: 1.5; }
-        
+        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
+        .post-body img { max-width: 100%; border-radius: 8px; display: block; margin: 20px 0; }
+        .post-body strong { font-weight: 900; color: var(--v-red); }
         .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; color: #000; }
+        
         .loader-wrap { display: flex; justify-content: center; padding-top: 150px; }
         .spinner { width: 32px; height: 32px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid var(--v-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- 手机端移动适配 (屏幕宽度小于 768px) --- */
         @media screen and (max-width: 768px) {
             :root { --side-w: 0px; }
-            .sidebar { 
-                top: auto; bottom: 0; width: 100%; height: 60px; 
-                flex-direction: row; padding: 0 20px; box-sizing: border-box;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            }
+            .sidebar { top: auto; bottom: 0; width: 100%; height: 60px; flex-direction: row; padding: 0 20px; box-sizing: border-box; }
             #site-logo-container { margin-top: 0; flex-direction: row; gap: 10px; }
             .knot-line { display: none; }
-            .paper-tag { padding: 4px 8px; width: auto; transform: none; }
-            .site-name-v { writing-mode: horizontal-tb; font-size: 16px; letter-spacing: 2px; }
-
+            .site-name-v { writing-mode: horizontal-tb; font-size: 16px; }
             .sidebar-nav { margin: 0 0 0 auto; flex-direction: row; gap: 25px; }
-            .main-content { margin-left: 0; padding-bottom: 80px; } /* 为底栏留出空间 */
-            .header-tools { padding: 15px 20px; }
+            .main-content { margin-left: 0; padding-bottom: 80px; }
             #view-container { padding: 0 20px 20px 20px; }
-            .grid { grid-template-columns: 1fr; gap: 15px; }
-            .article { padding: 25px 20px; border-radius: 8px; }
-            .article h1 { font-size: 1.4em; }
-            
-            .search-container { right: 20px; left: 20px; width: auto; top: 70px; }
-            .post-body { font-size: 15px; line-height: 1.8; }
+            .grid { grid-template-columns: 1fr; }
+            .article { padding: 25px 20px; }
         }
     </style>
 </head>
@@ -124,7 +95,7 @@
     <div class="main-content">
         <div class="header-tools">
             <div class="search-container" id="sc">
-                <input type="text" id="sk" placeholder="输入搜索内容..." onkeypress="if(event.key==='Enter')exeSearch()">
+                <input type="text" id="sk" placeholder="..." onkeypress="if(event.key==='Enter')exeSearch()">
                 <button class="search-btn" onclick="exeSearch()">搜索</button>
             </div>
             <div class="search-trigger" onclick="toggleS()">
@@ -145,7 +116,7 @@
                 const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
                 data = await r.json();
                 renderHome();
-            } catch (e) { view.innerHTML = '<div style="text-align:center; color:white; padding-top:50px;">加载失败，请检查网络</div>'; }
+            } catch (e) { view.innerHTML = ''; }
         }
 
         function updateUI(html, navId = null) {
@@ -166,15 +137,18 @@
             const labels = [...new Set(data.flatMap(i => i.labels.map(l => l.name)))].slice(0, 5);
             const recents = data.slice(0, 5).map(i => i.title);
 
+            const labelHtml = labels.length ? `<ul class="card-list">${labels.map(l => `<li># ${l}</li>`).join('')}</ul>` : '';
+            const recentHtml = recents.length ? `<ul class="card-list">${recents.map(t => `<li>${t}</li>`).join('')}</ul>` : '';
+
             const html = `
                 <div class="grid">
-                    <div class="card" onclick="renderCategories()">
+                    <div class="card ${labels.length?'has-list':''}" onclick="renderCategories()">
                         <div class="card-h">分类</div>
-                        <ul class="card-list">${labels.length ? labels.map(l => `<li># ${l}</li>`).join('') : '<li>暂无分类</li>'}</ul>
+                        ${labelHtml}
                     </div>
-                    <div class="card" onclick="renderRecent()">
+                    <div class="card ${recents.length?'has-list':''}" onclick="renderRecent()">
                         <div class="card-h">最新</div>
-                        <ul class="card-list">${recents.length ? recents.map(t => `<li>${t}</li>`).join('') : '<li>暂无内容</li>'}</ul>
+                        ${recentHtml}
                     </div>
                 </div>`;
             updateUI(html);
@@ -188,27 +162,25 @@
             }));
             let h = '<div class="grid">';
             for(const name in m) {
-                h += `<div class="card" onclick="renderLabelPosts('${name}')">
+                h += `<div class="card has-list" onclick="renderLabelPosts('${name}')">
                         <div class="card-h"># ${name}</div>
                         <ul class="card-list">${m[name].map(t => `<li>${t}</li>`).join('')}</ul>
                       </div>`;
             }
-            if(h === '<div class="grid">') h += '<div style="color:white; grid-column:1/-1; text-align:center;">暂无分类内容</div>';
             updateUI(h + '</div>', 'nav-cat');
-        }
-
-        function renderLabelPosts(ln) {
-            const f = data.filter(i => i.labels.some(l => l.name === ln));
-            let h = `<div style="margin-bottom:20px; font-weight:900; color:white; font-size:1.2em; font-family:'Noto Serif SC';"># ${ln}</div><div class="grid">`;
-            f.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number})"><div class="card-h">${i.title}</div></div>`);
-            updateUI(h + '</div>');
         }
 
         function renderRecent() {
             let h = '<div class="grid">';
             data.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number})"><div class="card-h">${i.title}</div></div>`);
-            if(h === '<div class="grid">') h += '<div style="color:white; grid-column:1/-1; text-align:center;">暂无文章</div>';
             updateUI(h + '</div>', 'nav-recent');
+        }
+
+        function renderLabelPosts(ln) {
+            const f = data.filter(i => i.labels.some(l => l.name === ln));
+            let h = `<div style="margin-bottom:20px; font-weight:900; color:white; font-size:1.2em;"># ${ln}</div><div class="grid">`;
+            f.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number})"><div class="card-h">${i.title}</div></div>`);
+            updateUI(h + '</div>');
         }
 
         function toggleS() {
@@ -222,50 +194,21 @@
             if(!k) return;
             const reg = new RegExp(`(${k})`, 'gi');
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
-            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} 个结果</div><div class="grid">`;
-            
+            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} 结果</div><div class="grid">`;
             res.forEach(i => {
-                let bodyPlain = (i.body || "").replace(/[#*`\-\[\]]/g, ' ');
-                let snippet = "";
-                const idx = bodyPlain.toLowerCase().indexOf(k.toLowerCase());
-                if(idx > -1) {
-                    const start = Math.max(0, idx - 40);
-                    const end = Math.min(bodyPlain.length, idx + 120);
-                    snippet = (start > 0 ? "..." : "") + bodyPlain.substring(start, end).trim() + "...";
-                    snippet = snippet.replace(reg, '<span class="hl">$1</span>');
-                } else {
-                    snippet = bodyPlain.substring(0, 100).trim() + "...";
-                }
-                h += `<div class="card" onclick="renderArticle(${i.number},'${k}')">
-                        <div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div>
-                        <div class="search-snippet">${snippet}</div>
-                      </div>`;
+                h += `<div class="card" onclick="renderArticle(${i.number},'${k}')"><div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div></div>`;
             });
             updateUI(h + '</div>');
             document.getElementById('sc').classList.remove('show');
         }
 
-        /* --- 此函数集成了对图片和基础 Markdown 语法的支持 --- */
         function renderArticle(n, k = null) {
             const i = data.find(x => x.number === n);
             let b = i.body || '';
-
-            // 1. 解析 Markdown 图片语法: ![alt](url) -> <img> 标签
             b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1">');
-
-            // 2. 解析行内粗体: **text** -> <strong>
             b = b.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-            // 3. 解析行内代码: `text` -> <code>
-            b = b.replace(/`(.*?)`/g, '<code>$1</code>');
-
-            // 4. 解析代码块: ```code``` -> <pre><code>
-            b = b.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-
-            // 5. 将搜索关键词高亮
             if(k) b = b.replace(new RegExp(`(${k})`, 'gi'), '<span class="hl">$1</span>');
-
-            const html = `<div class="article"><h1>${i.title}</h1><div class="post-body">${b}</div></div>`;
+            const html = `<div class="article"><h1 style="font-family:'Noto Serif SC'; color:var(--v-red); margin-top:0;">${i.title}</h1><div class="post-body" style="line-height:1.9; white-space:pre-wrap; color:var(--text-main); font-weight:500;">${b}</div></div>`;
             updateUI(html);
         }
 
