@@ -3,101 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <title>折立 - 复古配色</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* ==============================
-           【港式复古配色核心 (来自你的图) 】
-           ============================== */
         :root {
-            --vintage-red: #BB3E00;   /* 图中的红 (作为主Logo和标线色) */
-            --vintage-orange: #F7AD45;/* 图中的橙 (作为副Logo和悬停色) */
-            --vintage-green: #657C6A; /* 图中的绿 (作为侧边栏背景色) */
-            --vintage-gray: #A2B9A7;  /* 图中的灰 (作为主内容背景色) */
-            --text-on-dark: #f4f1ea;  /* 深色背景上的文字色 */
-            --card-white: #ffffff;     /* 卡片白色背景 */
+            --vintage-red: #BB3E00;   /* 图中的红 */
+            --vintage-orange: #F7AD45;/* 图中的橙 */
+            --vintage-green: #657C6A; /* 图中的绿 */
+            --vintage-gray: #A2B9A7;  /* 图中的灰 */
+            --card-white: #ffffff;     
+            --paper-color: #fdf6e3;    /* 复古小纸片的颜色 */
         }
 
-        /* 1. 全局：主内容背景换成图中的灰 */
-        body, html { 
-            margin: 0; padding: 0; height: 100%; 
-            background-color: var(--vintage-gray); /* 港式灰背景 */
-            font-family: -apple-system, system-ui, sans-serif; 
-            display: flex; overflow: hidden; 
-        }
+        body, html { margin: 0; padding: 0; height: 100%; background-color: var(--vintage-gray); font-family: -apple-system, system-ui, sans-serif; display: flex; overflow: hidden; }
         
-        /* 2. 侧边栏：背景换成图中的绿 */
+        /* 1. 侧边栏：调整顶部布局 */
         .sidebar { 
             position: fixed; top: 0; left: 0; width: 80px; height: 100vh; 
-            background-color: var(--vintage-green); /* 港式绿侧边栏 */
-            z-index: 100; display: flex; flex-direction: column; align-items: center; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1); 
+            background-color: var(--vintage-green); z-index: 100; 
+            display: flex; flex-direction: column; align-items: center; 
+            padding-top: 15px; /* 给顶部留出中国结的空间 */
         }
 
-        /* 3. 站名Logo：改用图中的红，增加质感 */
+        /* 2. 【核心：重造中国结吊饰 (偏左定位)】 */
+        #site-logo-container {
+            position: absolute; top: 10px; left: 10px; /* 偏左一点定位 */
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer;
+            z-index: 150;
+        }
+
+        /* 3. CSS 画中国结 (简约示意模型) */
+        .chinese-knot {
+            position: relative;
+            width: 30px; height: 30px;
+            background: var(--vintage-red);
+            border-radius: 4px;
+            transform: rotate(45deg); /* 旋转变成菱形 */
+            box-shadow: 2px 2px 0 var(--paper-color);
+        }
+        .chinese-knot::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 30px; height: 30px;
+            border: 2px solid var(--paper-color); border-radius: 4px;
+        }
+        /* 连接纸片的红线 */
+        .knot-string {
+            width: 2px; height: 25px;
+            background-color: var(--vintage-red);
+            margin-top: -5px; /* 让线藏在菱形下面 */
+        }
+
+        /* 4. 下面的复古小纸片 */
+        .paper-tag {
+            background-color: var(--paper-color);
+            padding: 10px 5px; /* 窄长的纸片 */
+            border-radius: 4px;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+        .paper-tag::before {
+            content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+            width: 2px; height: 10px; background-color: var(--vintage-red);
+        }
+
+        /* 纸片上的名字：折立 (竖排、融为一体) */
         .site-name-vertical { 
             writing-mode: vertical-rl; 
-            color: var(--vintage-red); /* 复古红文字 */
+            color: var(--vintage-green); /* 文字改用复古绿，融入侧边栏 */
             font-family: 'Noto Serif SC', serif; 
-            font-size: 26px; font-weight: 700; 
-            letter-spacing: 10px; margin: 40px 0; cursor: pointer; 
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.2); /* 微微的亮边，让它更跳 */
+            font-size: 18px; /* 字体缩小以适应小纸片 */
+            font-weight: 700; 
+            letter-spacing: 5px; 
+            text-align: center;
+            margin: 0;
         }
-        .site-name-vertical:hover { color: var(--vintage-orange); } /* 悬停变成港式橙 */
 
-        /* 4. 分类标签：增加对比度和复古感 */
-        .nav-label { 
-            color: rgba(244, 241, 234, 0.7); /* 半透明的米白 */
-            font-size: 15px; margin: 15px 0; cursor: pointer; 
-            transition: 0.2s; position: relative; padding: 5px 0; 
-            width: 60px; text-align: center; font-weight: bold;
-        }
+        /* 5. 分类标签和内容区保持原配色 */
+        #label-list { margin-top: 150px; /* 给中国结留出足够的空间 */ }
+        .nav-label { color: rgba(244, 241, 234, 0.7); font-size: 15px; margin: 15px 0; cursor: pointer; transition: 0.2s; position: relative; padding: 5px 0; width: 60px; text-align: center; font-weight: bold;}
         .nav-label:hover { color: #fff; transform: translateY(-2px); }
         .nav-label.active { color: #fff; text-shadow: 0 0 1px #fff; }
-        
-        /* 选中标线：用港式橙，醒目 */
-        .nav-label.active::after { 
-            content: ''; position: absolute; bottom: -2px; left: 20%; 
-            width: 60%; height: 2px; 
-            background-color: var(--vintage-orange); /* 复古橙标线 */
-            border-radius: 2px; 
-        }
+        .nav-label.active::after { content: ''; position: absolute; bottom: -2px; left: 20%; width: 60%; height: 2px; background-color: var(--vintage-orange); border-radius: 2px; }
 
-        /* 5. 内容区卡片：保持精致宋体标题 */
         .main-content { margin-left: 80px; flex: 1; padding: 40px; overflow-y: auto; height: 100vh; box-sizing: border-box; }
-        
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card { 
-            background: var(--card-white); border-radius: 12px; padding: 30px; margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(101,124,106,0.15); /* 阴影颜色也统一到港式绿系 */
-            border-left: 5px solid var(--vintage-red); /* 卡片左侧红边 */
-            position: relative; animation: fadeInUp 0.5s ease backwards; 
-            transition: 0.3s;
-        }
+        .card { background: var(--card-white); border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(101,124,106,0.15); border-left: 5px solid var(--vintage-red); position: relative; animation: fadeInUp 0.5s ease backwards; transition: 0.3s;}
         .card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(101,124,106,0.25); }
-        
-        .card h3 { 
-            margin-top: 0; color: var(--vintage-green); /* 标题改用港式绿 */
-            font-size: 1.6em; font-family: 'Noto Serif SC', serif; 
-            border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 18px; 
-        }
+        .card h3 { margin-top: 0; color: var(--vintage-green); font-size: 1.6em; font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 18px; }
         .card-body { color: #444; line-height: 1.8; white-space: pre-wrap; padding-bottom: 45px; font-size: 1.05em; }
-
-        /* 6. 右下角分类标签：统一配色 */
         .card-footer-tags { position: absolute; right: 20px; bottom: 18px; display: flex; gap: 8px; }
-        .inner-tag { 
-            padding: 3px 12px; border-radius: 15px; /* 改成更复古的小药丸形状 */
-            font-size: 11px; color: #fff; font-weight: bold; 
-            border: 1px solid rgba(255,255,255,0.3);
-            background: var(--vintage-green); /* 默认分类用港式绿背景 */
-        }
+        .inner-tag { padding: 3px 12px; border-radius: 15px; font-size: 11px; color: #fff; font-weight: bold; border: 1px solid rgba(255,255,255,0.3); background: var(--vintage-green); }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div class="site-name-vertical" onclick="filterNotes('all', this)">折立</div>
+        <div id="site-logo-container" onclick="filterNotes('all', this)">
+            <div class="chinese-knot"></div>
+            <div class="knot-string"></div>
+            <div class="paper-tag">
+                <div class="site-name-vertical">折立</div>
+            </div>
+        </div>
+        
         <div id="label-list"></div>
     </div>
+    
     <div class="main-content">
         <div id="feed">正在同步云端笔记...</div>
     </div>
@@ -138,12 +149,9 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.style.animationDelay = (index * 0.1) + 's';
-                
-                // 抓取 GitHub 原生颜色作为小药丸背景
                 let tagsHtml = item.labels.map(l => 
                     `<span class="inner-tag" style="background:#${l.color}">${l.name}</span>`
                 ).join('');
-
                 card.innerHTML = `
                     <h3>${item.title}</h3>
                     <div class="card-body">${item.body}</div>
@@ -156,7 +164,7 @@
         }
 
         function filterNotes(labelName, element) {
-            document.querySelectorAll('.nav-label, .site-name-vertical').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-label, #site-logo-container').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
             const filtered = labelName === 'all' ? allIssues : allIssues.filter(item => item.labels.some(l => l.name === labelName));
             renderNotes(filtered);
