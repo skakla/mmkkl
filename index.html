@@ -1,116 +1,124 @@
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>明站 - 全新的开始</title>
+    <title>明站</title>
     <style>
-        /* 1. 基础装修：护眼纸质书颜色 (#f4f1ea) */
+        /* 1. 基础装修：护眼色背景 */
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #f4f1ea; /* 护眼纸色 */
-            font-family: 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            overflow-x: hidden; /* 防止横向滚动条 */
+            margin: 0; padding: 0; height: 100%;
+            background-color: #f4f1ea; /* 纸质书颜色 */
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            display: flex; overflow: hidden;
         }
 
-        /* 2. 主角：棕色方形 */
-        .brown-square {
+        /* 2. 棕色方形变身为侧边栏 */
+        .sidebar {
             position: fixed; top: 0; right: 0;
             width: 100vw; height: 100vh;
             background-color: #7a5230; /* 棕色 */
-            display: flex; justify-content: center; align-items: center;
-            color: #f4f1ea; font-size: 2.5em; letter-spacing: 4px;
-            
-            /* 定义滑动的动画 (持续3秒，滑到最左侧) */
-            animation: slideInAndStick 3s ease-out forwards;
-            z-index: 100; /* 确保在最上层 */
+            z-index: 100;
+            display: flex; flex-direction: column; align-items: center;
+            /* 初始全屏，动画：滑向左侧并缩窄 */
+            animation: slideAndShrink 2.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
         }
 
-        /* 3. 滑动与掩盖动画定义 */
-        @keyframes slideInAndStick {
-            0% { transform: translateX(100vw); }   /* 初始：在屏幕最右侧外 */
-            60% { transform: translateX(0); }       /* 60%时间：完全到达屏幕中间 */
-            100% { transform: translateX(-50vw); }   /* 最终：掩盖一半在左侧外 */
+        /* 动画逻辑：从右往左滑，最后只留 80px 宽度靠在最左边 */
+        @keyframes slideAndShrink {
+            0% { transform: translateX(100%); width: 100vw; }
+            50% { transform: translateX(0); width: 100vw; }
+            100% { transform: translateX(0); width: 80px; left: 0; }
         }
 
-        /* 4. 裸露出来的标签内容区域 (从滑动的方形里跳出来) */
-        #content-area {
-            position: absolute; left: 50vw; top: 0; /* 在屏幕右半部分 */
-            width: 50vw; padding: 40px; box-sizing: border-box;
-            
-            /* 定义内容跳出来的动画 (在3秒后开始) */
-            opacity: 0; transform: translateY(20px);
-            animation: contentPopUp 1s ease-out 3s forwards;
-            z-index: 50;
+        /* 3. 侧边栏上的文字和标签 */
+        .sidebar-content {
+            opacity: 0;
+            display: flex; flex-direction: column; align-items: center;
+            padding-top: 40px;
+            animation: fadeIn 0.5s ease 2.5s forwards; /* 等侧边栏停稳后显示 */
         }
 
-        /* 5. 网页顶部名字：明站 */
-        #site-title {
-            position: fixed; top: 20px; right: 30px;
-            font-size: 1.8em; font-weight: bold;
-            color: #7a5230; text-shadow: 1px 1px 1px #fff;
-            opacity: 0; animation: contentPopUp 1s ease-out 3.5s forwards;
-            z-index: 200;
+        .site-name-vertical {
+            writing-mode: vertical-rl; /* 文字竖排 */
+            color: #f4f1ea; font-size: 24px; font-weight: bold;
+            letter-spacing: 8px; margin-bottom: 30px;
         }
 
-        /* 内容跳出动画定义 */
-        @keyframes contentPopUp {
-            to { opacity: 1; transform: translateY(0); }
+        .nav-label {
+            writing-mode: vertical-rl;
+            color: rgba(244, 241, 234, 0.7);
+            font-size: 16px; margin: 15px 0;
+            cursor: pointer; transition: 0.3s;
+        }
+        .nav-label:hover { color: #fff; transform: scale(1.1); }
+
+        /* 4. 右侧内容区 */
+        .main-content {
+            margin-left: 80px; /* 给侧边栏留位置 */
+            flex: 1; padding: 40px;
+            overflow-y: auto;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.8s forwards;
         }
 
-        /* 6. 标签卡片样式 */
-        .label-pill {
-            display: inline-block; padding: 5px 15px; border-radius: 20px;
-            background-color: #7a5230; color: #f4f1ea;
-            font-size: 14px; margin-right: 10px; margin-bottom: 10px;
-            animation: labelPop 0.5s ease-out backwards;
-            transition: 0.3s;
+        /* 5. 笔记卡片样式 */
+        .card {
+            background: #fff; border-radius: 8px;
+            padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #7a5230;
         }
-        .label-pill:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(122,82,48,0.3); }
+        .card h3 { margin-top: 0; color: #7a5230; }
+        .card-body { color: #555; line-height: 1.6; white-space: pre-wrap; }
 
-        /* 笔记卡片样式 */
-        .card { 
-            background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 25px;
-            border-left: 5px solid #7a5230; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .card h3 { color: #7a5230; margin-top: 0; font-size: 1.4em; }
-        .issue-body { color: #555; white-space: pre-wrap; margin-top: 10px; line-height: 1.6; }
+        @keyframes fadeIn { to { opacity: 1; } }
     </style>
 </head>
 <body>
-    <div id="site-title">明站</div>
 
-    <div class="brown-square">
-        <div>全新的·明站</div>
-    </div>
-
-    <div id="content-area">
-        <div id="feed">
-            <p>正在抓取云端数据...</p>
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <div class="site-name-vertical">明站</div>
+            <div id="label-list">
+                </div>
         </div>
     </div>
 
+    <div class="main-content">
+        <div id="feed">正在同步云端笔记...</div>
+    </div>
+
     <script>
-        // 核心：自动把你的 Issues变成网页上的标签
         fetch('https://api.github.com/repos/skakla/mmkkl/issues')
             .then(res => res.json())
             .then(data => {
                 const feed = document.getElementById('feed');
-                feed.innerHTML = ''; 
-                data.forEach((item, index) => {
+                const labelList = document.getElementById('label-list');
+                feed.innerHTML = '';
+                
+                // 收集所有标签显示在左侧
+                let allLabels = new Set();
+
+                data.forEach(item => {
+                    // 渲染卡片
                     const card = document.createElement('div');
                     card.className = 'card';
-                    card.style.animation = `contentPopUp 0.8s ease-out ${3 + index * 0.2}s backwards`;
-                    
-                    // 获取 GitHub 标签
-                    let labelsHtml = item.labels.map(l => 
-                        `<span class="label-pill" style="background:#${l.color}">${l.name}</span>`
-                    ).join('');
-
                     card.innerHTML = `
-                        <div>${labelsHtml || '<span class="label-pill" style="background:#666">未分类</span>'}</div>
                         <h3>${item.title}</h3>
-                        <div class="issue-body">${item.body}</div>
+                        <div class="card-body">${item.body}</div>
                     `;
                     feed.appendChild(card);
+
+                    // 收集标签
+                    item.labels.forEach(l => allLabels.add(l.name));
+                });
+
+                // 把标签竖着排在左侧
+                allLabels.forEach(labelName => {
+                    const lEl = document.createElement('div');
+                    lEl.className = 'nav-label';
+                    lEl.innerText = labelName;
+                    labelList.appendChild(lEl);
                 });
             });
     </script>
