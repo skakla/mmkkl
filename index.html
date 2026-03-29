@@ -1,25 +1,132 @@
-        /* --- 【复古纸片：偏左且有“挂”感】 --- */
-        .paper-tag {
-            background-color: var(--paper-color);
-            padding: 12px 6px;
-            border-radius: 2px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.15); /* 稍微加深阴影 */
-            position: relative;
-            transform: rotate(-1deg);
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>折立</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
+            --v-gray: #A2B9A7; --paper: #fdf6e3;
+        }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; display: flex; overflow: hidden; }
+        
+        /* 侧边栏 */
+        .sidebar { 
+            position: fixed; top: 0; left: 0; width: 80px; height: 100vh; 
+            background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
+        }
+
+        /* 挂件容器 - 偏左 */
+        #site-logo-container {
+            position: absolute; top: 15px; left: 10px;
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+        }
+
+        /* 中国结 */
+        .knot {
+            width: 24px; height: 24px; background: var(--v-red);
+            transform: rotate(45deg); border-radius: 2px;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* 红线 */
+        .line { width: 2px; height: 18px; background: var(--v-red); margin: -2px 0; }
+
+        /* 纸片 */
+        .paper {
+            background: var(--paper); padding: 10px 6px; border-radius: 2px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transform: rotate(-1deg);
             border: 1px solid rgba(0,0,0,0.1);
         }
-        
-        /* 纸片上的名字：确保肉眼可见 */
-        .site-name-vertical { 
-            writing-mode: vertical-rl; 
-            /* 关键改动：换成更深、更沉稳的深色 */
-            color: #2c1e14; 
-            font-family: 'Noto Serif SC', serif; 
-            font-size: 18px; 
-            font-weight: 900; /* 加粗 */
-            letter-spacing: 5px; 
-            text-align: center;
-            margin: 0;
-            /* 增加一个非常淡的白色描边感，确保字在任何深色背景下都能跳出来 */
-            text-shadow: 0.5px 0.5px 0px #fff; 
+
+        /* 纸片上的字 - 强制深色显示 */
+        .site-name { 
+            writing-mode: vertical-rl; color: #2c1e14 !important; 
+            font-family: 'Noto Serif SC', serif; font-size: 18px; 
+            font-weight: 900; letter-spacing: 4px; text-align: center;
         }
+
+        /* 标签列表 */
+        #label-list { margin-top: 155px; width: 100%; }
+        .nav-label { 
+            color: rgba(255, 255, 255, 0.7); font-size: 15px; margin: 15px 0; 
+            cursor: pointer; text-align: center; font-weight: bold; position: relative;
+        }
+        .nav-label.active { color: #fff; }
+        .nav-label.active::after { 
+            content: ''; position: absolute; bottom: -4px; left: 25%; 
+            width: 50%; height: 2px; background: var(--v-orange); 
+        }
+
+        /* 内容区 */
+        .main-content { margin-left: 80px; flex: 1; padding: 30px; overflow-y: auto; box-sizing: border-box; }
+        .card { 
+            background: #fff; border-radius: 12px; padding: 25px; margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid var(--v-red);
+        }
+        .card h3 { margin: 0 0 15px 0; color: var(--v-green); font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .card-body { color: #444; line-height: 1.8; white-space: pre-wrap; font-size: 16px; }
+        .tag-box { margin-top: 20px; display: flex; gap: 8px; justify-content: flex-end; }
+        .tag { padding: 2px 10px; border-radius: 10px; font-size: 11px; color: #fff; background: var(--v-green); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div id="site-logo-container" onclick="location.reload()">
+            <div class="knot"></div>
+            <div class="line"></div>
+            <div class="paper">
+                <div class="site-name">折立</div>
+            </div>
+        </div>
+        <div id="label-list"></div>
+    </div>
+    <div class="main-content">
+        <div id="feed">正在同步笔记...</div>
+    </div>
+
+    <script>
+        const repo = 'skakla/mmkkl';
+        const feed = document.getElementById('feed');
+        const lList = document.getElementById('label-list');
+
+        fetch(`https://api.github.com/repos/${repo}/issues?per_page=100`)
+            .then(r => r.json())
+            .then(data => {
+                window.allData = data;
+                const labels = new Set();
+                data.forEach(i => i.labels.forEach(l => labels.add(l.name)));
+                
+                lList.innerHTML = '';
+                labels.forEach(name => {
+                    const d = document.createElement('div');
+                    d.className = 'nav-label';
+                    d.innerText = name;
+                    d.onclick = () => filter(name, d);
+                    lList.appendChild(d);
+                });
+                render(data);
+            })
+            .catch(() => feed.innerHTML = '加载失败');
+
+        function render(data) {
+            feed.innerHTML = '';
+            data.forEach(item => {
+                const c = document.createElement('div');
+                c.className = 'card';
+                const ts = item.labels.map(l => `<span class="tag" style="background:#${l.color}">${l.name}</span>`).join('');
+                c.innerHTML = `<h3>${item.title}</h3><div class="card-body">${item.body}</div><div class="tag-box">${ts}</div>`;
+                feed.appendChild(c);
+            });
+        }
+
+        function filter(name, el) {
+            document.querySelectorAll('.nav-label').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            render(window.allData.filter(i => i.labels.some(l => l.name === name)));
+        }
+    </script>
+</body>
+</html>
