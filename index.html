@@ -31,7 +31,7 @@
         .main-content { margin-left: var(--side-w); min-height: 100vh; }
         .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 30px; max-width: 1100px; margin: 0 auto; height: 50px; position: relative; }
 
-        /* 搜索栏样式修正 */
+        /* 搜索栏：整合到一起 */
         .search-container { 
             display: none; align-items: center; background: #ffffff; 
             border: 2px solid var(--v-red); border-radius: 8px; 
@@ -39,7 +39,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .search-container.show { display: flex; }
-        .search-container input { border: none; outline: none; padding: 6px 10px; flex: 1; font-size: 14px; background: transparent; }
+        .search-container input { border: none; outline: none; padding: 6px 10px; flex: 1; font-size: 14px; background: transparent; width: 100px; }
         .search-btn { background: var(--v-red); color: white; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
 
         .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -56,17 +56,29 @@
         .card-list { list-style: none; padding: 0; margin: 14px 0 0 0; border-top: 1.5px solid #eee; padding-top: 12px; }
         .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* 搜索预览样式 */
+        /* 搜索预览 */
         .search-preview { 
             margin-top: 12px; font-size: 14px; color: var(--text-sub); 
             line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 5; 
             -webkit-box-orient: vertical; overflow: hidden; border-top: 1.5px solid #eee; padding-top: 10px;
         }
 
+        /* 文章与图片修正 */
         .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
         .article h1 { font-family: 'Noto Serif SC'; color: var(--v-red); margin-top: 0; }
         .post-body { line-height: 1.9; white-space: pre-wrap; color: var(--text-main); font-weight: 500; }
-        .post-body img { max-width: 100%; border-radius: 8px; display: block; margin: 20px 0; }
+        
+        /* 针对你说的拉伸问题进行修复 */
+        .post-body img { 
+            max-width: 90%;          /* 宽度不占满，留一点呼吸感 */
+            max-height: 500px;       /* 限制高度，防止无限纵向延伸 */
+            display: block; 
+            margin: 25px auto; 
+            border-radius: 8px; 
+            object-fit: contain;      /* 核心：确保图片按比例缩放，不拉伸 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
         .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; }
 
         @media screen and (max-width: 768px) {
@@ -184,15 +196,13 @@
             let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} 结果</div><div class="grid">`;
             res.forEach(i => {
                 let preview = "";
-                const body = i.body || "";
+                const body = (i.body || "").replace(/!\[.*?\]\(.*?\)/g, "[图片]"); // 预览时不显示图片链接
                 const idx = body.toLowerCase().indexOf(k.toLowerCase());
                 
                 if (idx !== -1) {
-                    // 截取关键词前后的文字，大约各50个字符
-                    const start = Math.max(0, idx - 50);
-                    const end = Math.min(body.length, idx + 100);
+                    const start = Math.max(0, idx - 40);
+                    const end = Math.min(body.length, idx + 80);
                     preview = (start > 0 ? "..." : "") + body.substring(start, end).replace(/\n/g, ' ') + (end < body.length ? "..." : "");
-                    // 高亮关键词
                     preview = preview.replace(reg, '<span class="hl">$1</span>');
                 }
 
