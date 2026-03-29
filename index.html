@@ -12,17 +12,21 @@
             --text-main: #2c1e14; --text-sub: #444444;
             --side-w: 80px;
         }
-
-        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
         body, html { margin: 0; padding: 0; background: var(--v-gray); font-family: sans-serif; height: 100%; width: 100%; overflow-x: hidden; }
         
-        /* 侧边栏：平板/PC 默认 */
+        /* 全局去除点击阴影和高亮 */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        /* 侧边栏 */
         .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100%; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.3), inset 1px 1px 0 rgba(255,255,255,0.4); }
         .knot::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(255,255,255,0.3); border-radius: 1px; }
         .knot-line { width: 2px; height: 18px; background: var(--v-red); margin: -1px 0; z-index: 2; }
-        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 3px 3px 8px rgba(0,0,0,0.2); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 34px; }
+        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 3px 3px 8px rgba(0,0,0,0.2); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 34px; box-sizing: border-box; }
         .site-name-v { writing-mode: vertical-rl; color: var(--text-main); font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
 
         .sidebar-nav { margin-top: auto; margin-bottom: 35px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
@@ -30,34 +34,30 @@
         .nav-item div { color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 900; }
         .nav-item.active div { color: var(--v-orange); }
 
-        /* 内容区 */
-        .main-content { margin-left: var(--side-w); min-height: 100vh; padding: 20px 40px 40px 40px; }
-        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 15px 0; max-width: 1100px; margin: 0 auto; height: 50px; position: relative; }
+        .main-content { margin-left: var(--side-w); min-height: 100vh; padding: 0 40px 40px 40px; box-sizing: border-box; }
         
-        /* 搜索框 */
+        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 0; max-width: 1100px; margin: 0 auto; height: 50px; position: relative; }
+        
         .search-wrapper { position: relative; display: flex; align-items: center; }
+        
         .search-container { 
             display: none; align-items: center; background: white; 
             border: 2px solid var(--v-red); border-radius: 10px; padding: 2px; 
-            position: absolute; right: 55px; width: 260px; z-index: 2001;
+            position: absolute; right: 55px; width: 260px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 2001;
         }
         .search-container.show { display: flex; }
-        .search-container input { border: none; outline: none; padding: 8px 12px; flex: 1; font-size: 14px; }
-        .search-btn { background: var(--v-red); color: white; border: none; height: 34px; padding: 0 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
-        .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .icon-search-v { width: 20px; height: 20px; border: 2.5px solid var(--v-red); border-radius: 50%; position: relative; }
+        .search-container input { border: none; outline: none; padding: 8px 12px; flex: 1; font-size: 14px; width: 120px; border-radius: 8px 0 0 8px; }
+        .search-btn { background: var(--v-red); color: white; border: none; height: 34px; padding: 0 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; flex-shrink: 0; }
+        
+        .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2002; }
+        .icon-search-v { width: 20px; height: 20px; position: relative; border: 2.5px solid var(--v-red); border-radius: 50%; box-sizing: border-box; }
         .icon-search-v::after { content: ''; position: absolute; width: 3px; height: 8px; background: var(--v-red); bottom: -6px; right: -4px; transform: rotate(-45deg); }
-
-        /* 布局 */
-        .home-layout { display: flex; gap: 30px; max-width: 1100px; margin: 0 auto; align-items: flex-start; }
-        .left-column { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
-        .right-column { flex-grow: 1; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
         .card { background: var(--card); border-radius: 15px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.3em; color: var(--v-green); font-weight: 900; margin-bottom: 12px; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.3em; color: var(--v-green); font-weight: 900; margin-bottom: 12px; line-height: 1.3; }
         
-        /* 搜索预览样式 */
         .search-snippet { 
             margin-top: 15px; font-size: 14px; color: #666; line-height: 1.6; 
             border-top: 1px dashed #eee; padding-top: 12px;
@@ -65,37 +65,42 @@
             overflow: hidden; text-overflow: ellipsis;
         }
 
+        .card-list { list-style: none; padding: 0; margin: 0; }
+        .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .home-layout { display: flex; gap: 30px; max-width: 1100px; margin: 20px auto; align-items: flex-start; }
+        .left-column { width: 280px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
+        .right-column { flex-grow: 1; }
+
         .random-box { background: var(--paper); border-radius: 15px; padding: 40px; position: relative; min-height: 350px; box-shadow: inset 0 0 40px rgba(0,0,0,0.05); }
         .random-tag-label { position: absolute; top: 20px; right: 25px; font-size: 12px; color: var(--v-red); font-weight: bold; background: rgba(187, 62, 0, 0.1); padding: 4px 12px; border-radius: 20px; }
-        .random-title { font-family: 'Noto Serif SC', serif; font-size: 2.2em; color: var(--text-main); margin-bottom: 20px; font-weight: 900; }
+        .random-title { font-family: 'Noto Serif SC', serif; font-size: 2.2em; color: var(--text-main); margin-bottom: 20px; font-weight: 900; line-height: 1.3; }
         .random-snippet { font-size: 17px; line-height: 1.8; color: var(--text-sub); margin-bottom: 30px; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
-        .read-more-btn { display: inline-block; background: var(--v-red); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .read-more-btn { display: inline-block; background: var(--v-red); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; cursor: pointer; border: none; }
 
-        /* 文章详情 */
-        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 15px; }
-        .article-tags { margin-bottom: 15px; display: flex; gap: 8px; }
+        /* 文章内标签样式 */
+        .article-tags { margin-bottom: 15px; display: flex; gap: 8px; flex-wrap: wrap; }
         .article-tag-item { color: var(--v-red); font-size: 13px; font-weight: bold; background: rgba(187, 62, 0, 0.1); padding: 4px 12px; border-radius: 20px; }
-        .post-body { line-height: 2; color: var(--text-main); font-size: 18px; white-space: pre-wrap; }
-        .hl { background: var(--hl); padding: 0 2px; border-radius: 2px; font-weight: bold; }
 
-        /* 文件下载按钮样式 */
-        .file-link {
-            display: inline-flex; align-items: center; gap: 10px; 
-            background: #f5f5f5; border: 2px solid var(--v-green); 
-            padding: 8px 16px; border-radius: 8px; color: var(--v-green); 
-            text-decoration: none; font-weight: bold; margin: 10px 0; font-size: 14px;
+        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 15px; }
+        .article h1 { font-family: 'Noto Serif SC'; color: var(--v-red); font-size: 2.2em; margin-bottom: 30px; margin-top: 0; }
+        .post-body { line-height: 2; color: var(--text-main); font-size: 18px; white-space: pre-wrap; }
+        .hl { background: var(--hl); padding: 0 2px; border-radius: 2px; font-weight: bold; color: #000; }
+
+        /* 专门针对按钮点击去除反馈阴影 */
+        button:active, .read-more-btn:active, .nav-item:active, .card:active {
+            box-shadow: none;
+            transform: none;
         }
 
         @media (max-width: 850px) {
-            .sidebar { width: 100%; height: 60px; top: auto; bottom: 0; flex-direction: row; padding: 0 20px; }
-            .knot-line { display: none; }
+            .sidebar { width: 100%; height: 60px; top: auto; bottom: 0; flex-direction: row; padding: 0 20px; box-sizing: border-box; }
+            .main-content { margin-left: 0; padding-bottom: 100px; padding-left: 20px; padding-right: 20px; }
+            .home-layout { flex-direction: column; }
+            .left-column { width: 100%; }
             .site-name-v { writing-mode: horizontal-tb; font-size: 16px; }
             .sidebar-nav { margin: 0 0 0 auto; flex-direction: row; gap: 20px; margin-bottom: 0; }
-            .main-content { margin-left: 0; padding: 10px 15px 80px 15px; }
-            .home-layout { flex-direction: column; }
-            .left-column { width: 100%; order: 2; }
-            .right-column { order: 1; }
-            .grid { grid-template-columns: 1fr; }
+            .search-container { width: 200px; right: 45px; }
         }
     </style>
 </head>
@@ -115,7 +120,7 @@
         <div class="header-tools">
             <div class="search-wrapper">
                 <div class="search-container" id="sc">
-                    <input type="text" id="sk" placeholder="搜索..." onkeypress="if(event.key==='Enter')exeSearch()">
+                    <input type="text" id="sk" placeholder="搜索文章内容..." onkeypress="if(event.key==='Enter')exeSearch()">
                     <button class="search-btn" onclick="exeSearch()">搜索</button>
                 </div>
                 <div class="search-trigger" onclick="toggleS()">
@@ -128,22 +133,25 @@
 
     <script>
         const repo = 'skakla/mmkkl';
-        let data = [];
+        let data = JSON.parse(localStorage.getItem('blog_cache') || '[]');
         const view = document.getElementById('view-container');
 
         async function init() {
-            const cache = localStorage.getItem('blog_cache');
-            if(cache) { data = JSON.parse(cache); renderHome(); }
+            if(data.length > 0) renderHome();
             try {
                 const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
-                if(r.ok) { data = await r.json(); localStorage.setItem('blog_cache', JSON.stringify(data)); renderHome(); }
-            } catch(e) {}
+                if (r.ok) {
+                    data = await r.json();
+                    localStorage.setItem('blog_cache', JSON.stringify(data));
+                    renderHome();
+                }
+            } catch (e) { console.error(e); }
         }
 
         function toggleS() {
-            const s = document.getElementById('sc');
-            s.classList.toggle('show');
-            if(s.classList.contains('show')) document.getElementById('sk').focus();
+            const sc = document.getElementById('sc');
+            sc.classList.toggle('show');
+            if(sc.classList.contains('show')) document.getElementById('sk').focus();
         }
 
         function exeSearch() {
@@ -152,12 +160,22 @@
             const reg = new RegExp(`(${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
             
-            let h = `<div style="max-width:1100px; margin:0 auto 20px; color:white; font-weight:bold;">“${k}” 的搜索结果 (${res.length})</div><div class="grid">`;
+            let h = `<div style="margin: 0 auto 20px auto; max-width:1100px; font-weight:900; color:white;">关于 “${k}” 的搜索结果 (${res.length})</div><div class="grid">`;
+            
             res.forEach(i => {
                 const cleanBody = (i.body || "").replace(/!\[.*?\]\(.*?\)/g, "").replace(/\[(.*?)\]\(.*?\)/g, "$1");
-                const matchIndex = cleanBody.search(reg);
-                let snippet = matchIndex !== -1 ? "..." + cleanBody.substring(Math.max(0, matchIndex - 60), matchIndex + 140) + "..." : cleanBody.substring(0, 160) + "...";
+                const fullText = i.title + " " + cleanBody;
+                let snippet = "";
                 
+                const matchIndex = fullText.search(reg);
+                if (matchIndex !== -1) {
+                    const start = Math.max(0, matchIndex - 60);
+                    const end = Math.min(fullText.length, matchIndex + 140);
+                    snippet = (start > 0 ? "..." : "") + fullText.substring(start, end) + (end < fullText.length ? "..." : "");
+                } else {
+                    snippet = fullText.substring(0, 160) + "...";
+                }
+
                 h += `<div class="card" onclick="renderArticle(${i.number},'${k}')">
                         <div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div>
                         <div class="search-snippet">${snippet.replace(reg, '<span class="hl">$1</span>')}</div>
@@ -169,17 +187,27 @@
 
         function renderHome() {
             if(!data.length) return;
-            const pool = data.filter(p => p.labels.some(l => l.name === '存疑之论' || l.name === '转载文章')) || data;
-            const randomPost = pool[Math.floor(Math.random() * pool.length)] || data[0];
-            const activeTag = randomPost.labels[0]?.name || "精选";
-            const snippet = (randomPost.body || "").replace(/!\[.*?\]\(.*?\)/g, "").substring(0, 200) + "...";
-            const labels = [...new Set(data.flatMap(i => i.labels.map(l => l.name)))].slice(0, 6);
-            const recents = data.slice(0, 5);
+            const pool = data.filter(p => p.labels.some(l => l.name === '存疑之论' || l.name === '转载文章'));
+            const displayPool = pool.length > 0 ? pool : data;
+            const NOW = Date.now();
+            const TWELVE_HOURS = 12 * 60 * 60 * 1000;
+            let cache = JSON.parse(localStorage.getItem('home_random_post') || '{}');
+            let randomPost;
+            if (!cache.postId || !cache.time || (NOW - cache.time > TWELVE_HOURS)) {
+                randomPost = displayPool[Math.floor(Math.random() * displayPool.length)];
+                localStorage.setItem('home_random_post', JSON.stringify({ postId: randomPost.number, time: NOW }));
+            } else {
+                randomPost = data.find(p => p.number === cache.postId) || displayPool[0];
+            }
+            const activeTag = randomPost.labels.find(l => l.name === '存疑之论' || l.name === '转载文章')?.name || "精选";
+            const snippet = (randomPost.body || "").replace(/!\[.*?\]\(.*?\)/g, "").substring(0, 250) + "...";
+            const labels = [...new Set(data.flatMap(i => i.labels.map(l => l.name)))].slice(0, 5);
+            const recents = data.slice(0, 5).map(i => i.title);
 
-            updateUI(`<div class="home-layout">
+            let h = `<div class="home-layout">
                 <div class="left-column">
-                    <div class="card" onclick="renderCategories()"><div class="card-h">分类</div><ul style="padding:0;list-style:none;color:var(--text-sub);font-size:14px;display:flex;flex-wrap:wrap;gap:8px;">${labels.map(l => `<li>#${l}</li>`).join('')}</ul></div>
-                    <div class="card" onclick="renderRecent()"><div class="card-h">最新</div><ul style="padding:0;list-style:none;color:var(--text-sub);font-size:14px;">${recents.map(r => `<li style="margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.title}</li>`).join('')}</ul></div>
+                    <div class="card" onclick="renderCategories()"><div class="card-h">分类</div><ul class="card-list">${labels.map(l => `<li># ${l}</li>`).join('')}</ul></div>
+                    <div class="card" onclick="renderRecent()"><div class="card-h">最新</div><ul class="card-list">${recents.map(t => `<li>${t}</li>`).join('')}</ul></div>
                 </div>
                 <div class="right-column">
                     <div class="random-box">
@@ -189,21 +217,24 @@
                         <div class="read-more-btn" onclick="renderArticle(${randomPost.number})">阅读原文</div>
                     </div>
                 </div>
-            </div>`);
+            </div>`;
+            updateUI(h);
         }
 
         function renderArticle(n, k = null) {
             const i = data.find(x => x.number === n);
             if(!i) return;
-            const tagsHtml = i.labels.map(l => `<span class="article-tag-item">${l.name}</span>`).join('');
-            let b = i.body || '';
-            
-            // 恢复图片和文件按钮渲染
-            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:100%; border-radius:10px; margin:20px 0; display:block;">');
-            b = b.replace(/\[(.*?)\]\((.*?\.(?:pdf|zip|rar|7z|docx|xlsx|pptx|exe|apk|txt|csv))\)/gi, 
-                '<a href="$2" download="$1" class="file-link">📄 $1</a>');
 
-            if(k) b = b.replace(new RegExp(`(${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'), '<span class="hl">$1</span>');
+            const tagsHtml = i.labels.map(l => `<span class="article-tag-item">${l.name}</span>`).join('');
+
+            let b = i.body || '';
+            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:100%; border-radius:10px; margin:20px 0;">');
+            b = b.replace(/\[(.*?)\]\((.*?\.(?:pdf|zip|rar|7z|docx|xlsx|pptx|exe|apk|txt|csv))\)/gi, 
+                '<a href="$2" download="$1" style="display: inline-flex; align-items: center; gap: 10px; background: #f5f5f5; border: 2px solid var(--v-green); padding: 8px 16px; border-radius: 8px; color: var(--v-green); text-decoration: none; font-weight: bold; margin: 10px 0; font-size: 14px;">$1</a>');
+            if(k) {
+                const safeK = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                b = b.replace(new RegExp(`(${safeK})`, 'gi'), '<span class="hl">$1</span>');
+            }
             
             updateUI(`<div class="article">
                 <div class="article-tags">${tagsHtml}</div>
@@ -214,9 +245,14 @@
 
         function renderCategories() {
             const m = {};
-            data.forEach(i => i.labels.forEach(l => { if(!m[l.name]) m[l.name] = []; m[l.name].push(i.title); }));
+            data.forEach(i => i.labels.forEach(l => {
+                if(!m[l.name]) m[l.name] = [];
+                if(m[l.name].length < 5) m[l.name].push(i.title);
+            }));
             let h = '<div class="grid">';
-            for(const name in m) h += `<div class="card" onclick="renderLabelPosts('${name}')"><div class="card-h"># ${name}</div><div style="font-size:13px;color:var(--text-sub)">${m[name].length} 篇文章</div></div>`;
+            for(const name in m) {
+                h += `<div class="card" onclick="renderLabelPosts('${name}')"><div class="card-h"># ${name}</div><ul class="card-list">${m[name].map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+            }
             updateUI(h + '</div>', 'nav-cat');
         }
 
@@ -228,7 +264,7 @@
 
         function renderLabelPosts(ln) {
             const f = data.filter(i => i.labels.some(l => l.name === ln));
-            let h = `<div style="max-width:1100px; margin:0 auto 20px; color:white; font-weight:bold;"># ${ln}</div><div class="grid">`;
+            let h = `<div style="margin: 0 auto 20px auto; max-width:1100px; font-weight:900; color:white;"># ${ln}</div><div class="grid">`;
             f.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number})"><div class="card-h">${i.title}</div></div>`);
             updateUI(h + '</div>');
         }
