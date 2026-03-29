@@ -14,7 +14,6 @@
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* 侧边栏 */
         .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
@@ -51,15 +50,17 @@
         #view-container.loading-fade { opacity: 0; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; min-height: 80px; }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); margin-bottom: 0; font-weight: 900; }
+        
+        /* 核心卡片样式修复：去掉多余的边距，确保内容为空时卡片不塌陷也不多出阴影 */
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); font-weight: 900; margin: 0; }
         .card.has-list .card-h { margin-bottom: 14px; }
         
         .card-list { list-style: none; padding: 0; margin: 0; border-top: 1.5px solid #eee; padding-top: 12px; }
         .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
-        .post-body img { max-width: 100%; border-radius: 8px; display: block; margin: 20px 0; }
+        .post-body img { max-width: 100%; border-radius: 8px; display: block; margin: 20px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .post-body strong { font-weight: 900; color: var(--v-red); }
         .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; color: #000; }
         
@@ -137,21 +138,22 @@
             const labels = [...new Set(data.flatMap(i => i.labels.map(l => l.name)))].slice(0, 5);
             const recents = data.slice(0, 5).map(i => i.title);
 
-            const labelHtml = labels.length ? `<ul class="card-list">${labels.map(l => `<li># ${l}</li>`).join('')}</ul>` : '';
-            const recentHtml = recents.length ? `<ul class="card-list">${recents.map(t => `<li>${t}</li>`).join('')}</ul>` : '';
-
-            const html = `
-                <div class="grid">
-                    <div class="card ${labels.length?'has-list':''}" onclick="renderCategories()">
+            let h = '<div class="grid">';
+            // 分类卡片
+            if(labels.length) {
+                h += `<div class="card has-list" onclick="renderCategories()">
                         <div class="card-h">分类</div>
-                        ${labelHtml}
-                    </div>
-                    <div class="card ${recents.length?'has-list':''}" onclick="renderRecent()">
+                        <ul class="card-list">${labels.map(l => `<li># ${l}</li>`).join('')}</ul>
+                      </div>`;
+            }
+            // 最新卡片
+            if(recents.length) {
+                h += `<div class="card has-list" onclick="renderRecent()">
                         <div class="card-h">最新</div>
-                        ${recentHtml}
-                    </div>
-                </div>`;
-            updateUI(html);
+                        <ul class="card-list">${recents.map(t => `<li>${t}</li>`).join('')}</ul>
+                      </div>`;
+            }
+            updateUI(h + '</div>');
         }
 
         function renderCategories() {
@@ -162,10 +164,13 @@
             }));
             let h = '<div class="grid">';
             for(const name in m) {
-                h += `<div class="card has-list" onclick="renderLabelPosts('${name}')">
-                        <div class="card-h"># ${name}</div>
-                        <ul class="card-list">${m[name].map(t => `<li>${t}</li>`).join('')}</ul>
-                      </div>`;
+                // 只有当分类下真的有内容时才生成卡片
+                if(m[name].length > 0) {
+                    h += `<div class="card has-list" onclick="renderLabelPosts('${name}')">
+                            <div class="card-h"># ${name}</div>
+                            <ul class="card-list">${m[name].map(t => `<li>${t}</li>`).join('')}</ul>
+                          </div>`;
+                }
             }
             updateUI(h + '</div>', 'nav-cat');
         }
@@ -195,9 +200,7 @@
             const reg = new RegExp(`(${k})`, 'gi');
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
             let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} 结果</div><div class="grid">`;
-            res.forEach(i => {
-                h += `<div class="card" onclick="renderArticle(${i.number},'${k}')"><div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div></div>`;
-            });
+            res.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number},'${k}')"><div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div></div>`);
             updateUI(h + '</div>');
             document.getElementById('sc').classList.remove('show');
         }
