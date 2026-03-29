@@ -2,122 +2,82 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>折立 | 数字化笔记</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>折立</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
             --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff; --hl: #ffee58;
-            --text-main: #2c1e14; --text-sub: #555555;
-            --side-w: 85px; --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --text-main: #2c1e14; --text-sub: #444444;
+            --side-w: 80px;
         }
-
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; background: var(--v-gray); font-family: sans-serif; height: 100%; width: 100%; overflow-x: hidden; }
         
-        body, html { 
-            margin: 0; padding: 0; background: var(--v-gray); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text-main); height: 100%; width: 100%; overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+        /* 侧边栏 - 严格回归原始定位 */
+        .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100%; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
+        #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+        .knot-line { width: 2px; height: 18px; background: var(--v-red); margin: -1px 0; z-index: 2; }
+        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 3px 3px 8px rgba(0,0,0,0.2); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 34px; box-sizing: border-box; }
+        .site-name-v { writing-mode: vertical-rl; color: var(--text-main); font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
 
-        /* --- 侧边栏 (PC) & 底部导航 (Mobile) --- */
-        .sidebar { 
-            position: fixed; top: 0; left: 0; width: var(--side-w); height: 100%; 
-            background: var(--v-green); z-index: 1000; display: flex; 
-            flex-direction: column; align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
+        .sidebar-nav { margin-top: auto; margin-bottom: 35px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .nav-item { cursor: pointer; opacity: 0.7; }
+        .nav-item div { color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 900; }
+        .nav-item.active div { color: var(--v-orange); }
 
-        #site-logo-container { margin-top: 30px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: var(--transition); }
-        #site-logo-container:hover { transform: translateY(-2px); }
+        /* 内容区 - 严格回归 margin-left 逻辑 */
+        .main-content { margin-left: var(--side-w); min-height: 100vh; padding: 0 20px 40px 20px; box-sizing: border-box; }
         
-        .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
-        .knot-line { width: 2px; height: 20px; background: var(--v-red); margin: -1px 0; z-index: 2; }
-        .paper-tag { background: var(--paper); padding: 12px 8px; border-radius: 2px; box-shadow: 3px 3px 12px rgba(0,0,0,0.15); transform: rotate(-1.5deg); }
-        .site-name-v { writing-mode: vertical-rl; color: var(--text-main); font-family: 'Noto Serif SC', serif; font-size: 20px; font-weight: 900; letter-spacing: 4px; }
-
-        .sidebar-nav { margin-top: auto; margin-bottom: 40px; display: flex; flex-direction: column; gap: 25px; align-items: center; }
-        .nav-item { cursor: pointer; transition: var(--transition); text-align: center; }
-        .nav-item div { color: rgba(255,255,255,0.7); font-family: 'Noto Serif SC', serif; font-size: 16px; font-weight: 700; }
-        .nav-item:hover div { color: var(--paper); }
-        .nav-item.active div { color: var(--v-orange); transform: scale(1.1); }
-
-        /* --- 主内容区 --- */
-        .main-content { margin-left: var(--side-w); min-height: 100vh; padding: 20px 40px 60px 40px; max-width: 1400px; }
+        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 0; max-width: 1100px; margin: 0 auto; height: 50px; position: relative; }
         
-        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 15px 0; margin-bottom: 20px; position: sticky; top: 0; z-index: 900; }
-        
+        .search-wrapper { position: relative; display: flex; align-items: center; }
         .search-container { 
             display: none; align-items: center; background: white; 
-            border-radius: 12px; padding: 4px; position: absolute; right: 60px; 
-            width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: slideIn 0.3s ease;
+            border: 2px solid var(--v-red); border-radius: 10px; padding: 2px; 
+            position: absolute; right: 55px; width: 260px; z-index: 2001;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        
         .search-container.show { display: flex; }
-        .search-container input { border: none; outline: none; padding: 10px 15px; flex: 1; font-size: 15px; background: transparent; }
-        .search-btn { background: var(--v-red); color: white; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .search-container input { border: none; outline: none; padding: 8px 12px; flex: 1; font-size: 14px; width: 120px; }
+        .search-btn { background: var(--v-red); color: white; border: none; height: 34px; padding: 0 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
-        .search-trigger { width: 48px; height: 48px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: var(--transition); }
-        .search-trigger:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
-        .icon-search-v { width: 20px; height: 20px; border: 2.5px solid var(--v-red); border-radius: 50%; position: relative; }
-        .icon-search-v::after { content: ''; position: absolute; width: 2.5px; height: 8px; background: var(--v-red); bottom: -6px; right: -5px; transform: rotate(-45deg); }
+        .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .icon-search-v { width: 20px; height: 20px; position: relative; border: 2.5px solid var(--v-red); border-radius: 50%; box-sizing: border-box; }
+        .icon-search-v::after { content: ''; position: absolute; width: 3px; height: 8px; background: var(--v-red); bottom: -6px; right: -4px; transform: rotate(-45deg); }
 
-        /* --- 布局网格 --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-        .card { 
-            background: var(--card); border-radius: 16px; padding: 25px; 
-            border-left: 6px solid var(--v-orange); cursor: pointer; 
-            transition: var(--transition); position: relative; overflow: hidden;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); font-weight: 900; margin-bottom: 12px; }
+        /* 网格布局 - 适配平板 */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .card { background: var(--card); border-radius: 15px; padding: 20px; border-left: 6px solid var(--v-orange); cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.2em; color: var(--v-green); font-weight: 900; margin-bottom: 10px; line-height: 1.3; }
         
-        .home-layout { display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
-        .random-box { 
-            background: var(--paper); border-radius: 20px; padding: 50px; 
-            position: relative; box-shadow: inset 0 0 50px rgba(0,0,0,0.03), 0 10px 30px rgba(0,0,0,0.05);
-        }
-        .random-title { font-family: 'Noto Serif SC', serif; font-size: 2.5em; margin-bottom: 20px; line-height: 1.2; }
-        .random-snippet { font-size: 18px; line-height: 1.8; color: var(--text-sub); margin-bottom: 40px; }
+        /* 首页布局 - 兼容模式 */
+        .home-layout { display: flex; flex-wrap: wrap; gap: 25px; max-width: 1100px; margin: 20px auto; }
+        .left-column { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+        .right-column { flex: 1; min-width: 300px; }
 
-        /* --- 文章详情 --- */
-        .article { max-width: 850px; margin: 0 auto; background: #fff; padding: 60px 50px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .post-body { line-height: 1.9; font-size: 18px; color: #333; letter-spacing: 0.5px; }
-        .post-body img { display: block; max-width: 100%; border-radius: 12px; margin: 30px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .random-box { background: var(--paper); border-radius: 15px; padding: 30px; position: relative; min-height: 300px; }
+        .random-tag-label { position: absolute; top: 15px; right: 20px; font-size: 12px; color: var(--v-red); font-weight: bold; }
+        .random-title { font-family: 'Noto Serif SC', serif; font-size: 2em; color: var(--text-main); margin-bottom: 15px; font-weight: 900; }
+        .random-snippet { font-size: 16px; line-height: 1.7; color: var(--text-sub); margin-bottom: 25px; }
+        .read-more-btn { display: inline-block; background: var(--v-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; cursor: pointer; }
 
-        /* --- 手机端适配 --- */
+        /* 文章详情 */
+        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 15px; box-sizing: border-box; }
+        .post-body { line-height: 1.8; color: var(--text-main); font-size: 17px; white-space: pre-wrap; word-wrap: break-word; }
+        .post-body img { max-width: 100%; height: auto; border-radius: 10px; margin: 15px 0; }
+        .hl { background: var(--hl); padding: 0 2px; }
+
+        /* 移动端适配 - 850px 以下 */
         @media (max-width: 850px) {
-            :root { --side-w: 0px; }
-            .sidebar { 
-                width: 100%; height: 70px; top: auto; bottom: 0; 
-                flex-direction: row; padding: 0 15px; 
-                background: rgba(101, 124, 106, 0.95);
-                backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-                border-top: 1px solid rgba(255,255,255,0.1);
-            }
-            #site-logo-container { margin-top: 0; flex-direction: row; gap: 10px; }
-            .knot, .knot-line { display: none; }
-            .paper-tag { padding: 6px 12px; transform: none; }
-            .site-name-v { writing-mode: horizontal-tb; font-size: 18px; letter-spacing: 2px; }
-            
-            .sidebar-nav { margin: 0 0 0 auto; flex-direction: row; gap: 20px; }
-            .main-content { margin-left: 0; padding: 15px 15px 100px 15px; }
-            
-            .home-layout { grid-template-columns: 1fr; }
-            .left-column { order: 2; }
-            .right-column { order: 1; }
-            
-            .random-box { padding: 30px 20px; min-height: auto; }
-            .random-title { font-size: 1.8em; }
-            
-            .search-container { 
-                position: fixed; top: 0; left: 0; right: 0; width: 100%; 
-                border-radius: 0; z-index: 1001; padding: 10px; 
-            }
-            .article { padding: 30px 20px; border-radius: 0; margin: -15px; width: calc(100% + 30px); }
-            .article h1 { font-size: 1.8em; }
+            .sidebar { width: 100%; height: 60px; top: auto; bottom: 0; flex-direction: row; padding: 0 15px; }
+            .main-content { margin-left: 0; padding-bottom: 80px; }
+            .site-name-v { writing-mode: horizontal-tb; font-size: 16px; }
+            .sidebar-nav { margin: 0 0 0 auto; flex-direction: row; gap: 20px; margin-bottom: 0; }
+            .home-layout { flex-direction: column; }
+            .left-column { width: 100%; }
+            .search-container { width: 200px; right: 45px; }
+            .article { padding: 20px; }
         }
     </style>
 </head>
@@ -137,7 +97,7 @@
         <div class="header-tools">
             <div class="search-wrapper">
                 <div class="search-container" id="sc">
-                    <input type="text" id="sk" placeholder="搜索文章..." onkeypress="if(event.key==='Enter')exeSearch()">
+                    <input type="text" id="sk" placeholder="搜索内容..." onkeypress="if(event.key==='Enter')exeSearch()">
                     <button class="search-btn" onclick="exeSearch()">搜索</button>
                 </div>
                 <div class="search-trigger" onclick="toggleS()">
@@ -149,7 +109,6 @@
     </div>
 
     <script>
-        // 核心逻辑保持不变，确保数据获取和渲染正常
         const repo = 'skakla/mmkkl';
         let data = JSON.parse(localStorage.getItem('blog_cache') || '[]');
         const view = document.getElementById('view-container');
@@ -163,7 +122,7 @@
                     localStorage.setItem('blog_cache', JSON.stringify(data));
                     renderHome();
                 }
-            } catch (e) { console.error("Fetch error:", e); }
+            } catch (e) { console.error(e); }
         }
 
         function toggleS() {
@@ -172,55 +131,42 @@
             if(sc.classList.contains('show')) document.getElementById('sk').focus();
         }
 
-        function updateUI(html, navId = null) {
-            view.innerHTML = html;
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.id === navId));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function exeSearch() {
+            const k = document.getElementById('sk').value.trim();
+            if(!k) return;
+            const reg = new RegExp(`(${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            const res = data.filter(i => (i.title + (i.body||'')).match(reg));
+            let h = `<div style="margin: 0 auto 20px auto; max-width:1100px; font-weight:900; color:white;">搜索结果 (${res.length})</div><div class="grid">`;
+            res.forEach(i => {
+                h += `<div class="card" onclick="renderArticle(${i.number},'${k}')">
+                        <div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div>
+                      </div>`;
+            });
+            updateUI(h + '</div>');
+            document.getElementById('sc').classList.remove('show');
         }
 
-        // --- 渲染函数 ---
         function renderHome() {
             if(!data.length) return;
             const pool = data.filter(p => p.labels.some(l => l.name === '存疑之论' || l.name === '转载文章'));
             const displayPool = pool.length > 0 ? pool : data;
-            
-            // 12小时更新一次随机文章
-            const NOW = Date.now();
-            let cache = JSON.parse(localStorage.getItem('home_random_post') || '{}');
-            let randomPost;
-            if (!cache.postId || (NOW - cache.time > 43200000)) {
-                randomPost = displayPool[Math.floor(Math.random() * displayPool.length)];
-                localStorage.setItem('home_random_post', JSON.stringify({ postId: randomPost.number, time: NOW }));
-            } else {
-                randomPost = data.find(p => p.number === cache.postId) || displayPool[0];
-            }
-
+            const randomPost = displayPool[Math.floor(Math.random() * displayPool.length)];
             const activeTag = randomPost.labels[0]?.name || "精选";
-            const snippet = (randomPost.body || "").replace(/!\[.*?\]\(.*?\)/g, "").substring(0, 180) + "...";
-            const labels = [...new Set(data.flatMap(i => i.labels.map(l => l.name)))].slice(0, 6);
+            const snippet = (randomPost.body || "").replace(/!\[.*?\]\(.*?\)/g, "").substring(0, 150) + "...";
+            const labels = [...new Set(data.flatMap(i => i.labels.map(l => l.name)))].slice(0, 5);
             const recents = data.slice(0, 5).map(i => i.title);
 
             let h = `<div class="home-layout">
                 <div class="left-column">
-                    <div class="card" onclick="renderCategories()" style="margin-bottom:20px">
-                        <div class="card-h">主题分类</div>
-                        <ul class="card-list" style="list-style:none;padding:0;line-height:2">
-                            ${labels.map(l => `<li style="color:var(--v-green);font-weight:bold"># ${l}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="card" onclick="renderRecent()">
-                        <div class="card-h">最近更新</div>
-                        <ul class="card-list" style="list-style:none;padding:0;font-size:14px;color:var(--text-sub)">
-                            ${recents.map(t => `<li style="margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">• ${t}</li>`).join('')}
-                        </ul>
-                    </div>
+                    <div class="card" onclick="renderCategories()"><div class="card-h">分类</div><ul style="list-style:none;padding:0;font-size:14px;color:var(--text-sub);line-height:1.8">${labels.map(l => `<li># ${l}</li>`).join('')}</ul></div>
+                    <div class="card" onclick="renderRecent()"><div class="card-h">最新</div><ul style="list-style:none;padding:0;font-size:13px;color:var(--text-sub);line-height:1.6">${recents.map(t => `<li style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t}</li>`).join('')}</ul></div>
                 </div>
                 <div class="right-column">
                     <div class="random-box">
-                        <div style="color:var(--v-red);font-weight:900;margin-bottom:10px;font-size:14px">今日推文 · ${activeTag}</div>
+                        <div class="random-tag-label">${activeTag}</div>
                         <div class="random-title">${randomPost.title}</div>
                         <div class="random-snippet">${snippet}</div>
-                        <div class="read-more-btn" onclick="renderArticle(${randomPost.number})" style="display:inline-block;background:var(--v-red);color:white;padding:12px 35px;border-radius:10px;cursor:pointer;font-weight:bold">阅读原文</div>
+                        <div class="read-more-btn" onclick="renderArticle(${randomPost.number})">阅读原文</div>
                     </div>
                 </div>
             </div>`;
@@ -231,60 +177,44 @@
             const i = data.find(x => x.number === n);
             if(!i) return;
             let b = i.body || '';
-            // 转换图片
-            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" alt="image">');
-            // 高亮搜索词
+            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1">');
             if(k) {
                 const reg = new RegExp(`(${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
                 b = b.replace(reg, '<span class="hl">$1</span>');
             }
-            updateUI(`<div class="article">
-                <div style="color:var(--v-red);font-weight:bold;margin-bottom:10px"># ${i.labels.map(l=>l.name).join(' # ')}</div>
-                <h1>${i.title}</h1>
-                <div class="post-body">${b}</div>
-                <div style="margin-top:50px;padding-top:20px;border-top:1px solid #eee;text-align:center">
-                    <button onclick="renderHome()" style="background:none;border:1px solid var(--v-green);color:var(--v-green);padding:10px 20px;border-radius:8px;cursor:pointer">返回首页</button>
-                </div>
-            </div>`);
-        }
-
-        function renderRecent() {
-            let h = '<div class="grid">';
-            data.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number})"><div class="card-h">${i.title}</div><div style="color:var(--text-sub);font-size:13px">${i.created_at.split('T')[0]}</div></div>`);
-            updateUI(h + '</div>', 'nav-recent');
+            updateUI(`<div class="article"><h1>${i.title}</h1><div class="post-body">${b}</div></div>`);
         }
 
         function renderCategories() {
             const m = {};
             data.forEach(i => i.labels.forEach(l => {
                 if(!m[l.name]) m[l.name] = [];
-                m[l.name].push(i);
+                m[l.name].push(i.title);
             }));
             let h = '<div class="grid">';
             for(const name in m) {
-                h += `<div class="card" onclick="renderLabelPosts('${name}')"><div class="card-h"># ${name}</div><div style="color:var(--text-sub)">共 ${m[name].length} 篇文章</div></div>`;
+                h += `<div class="card" onclick="renderLabelPosts('${name}')"><div class="card-h"># ${name}</div><div style="font-size:13px;color:var(--text-sub)">${m[name].length} 篇文章</div></div>`;
             }
             updateUI(h + '</div>', 'nav-cat');
         }
 
+        function renderRecent() {
+            let h = '<div class="grid">';
+            data.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number})"><div class="card-h">${i.title}</div></div>`);
+            updateUI(h + '</div>', 'nav-recent');
+        }
+
         function renderLabelPosts(ln) {
             const f = data.filter(i => i.labels.some(l => l.name === ln));
-            let h = `<div style="margin-bottom:20px;font-size:20px;font-weight:900;color:white">分类：${ln}</div><div class="grid">`;
+            let h = `<div style="margin: 0 auto 20px auto; max-width:1100px; font-weight:900; color:white;"># ${ln}</div><div class="grid">`;
             f.forEach(i => h += `<div class="card" onclick="renderArticle(${i.number})"><div class="card-h">${i.title}</div></div>`);
             updateUI(h + '</div>');
         }
 
-        function exeSearch() {
-            const k = document.getElementById('sk').value.trim();
-            if(!k) return;
-            const reg = new RegExp(`(${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            const res = data.filter(i => (i.title + (i.body||'')).match(reg));
-            let h = `<div style="margin-bottom:20px;font-weight:900;color:white;">“${k}” 的搜索结果 (${res.length})</div><div class="grid">`;
-            res.forEach(i => {
-                h += `<div class="card" onclick="renderArticle(${i.number},'${k}')"><div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div></div>`;
-            });
-            updateUI(h + '</div>');
-            document.getElementById('sc').classList.remove('show');
+        function updateUI(html, navId = null) {
+            view.innerHTML = html;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.id === navId));
+            window.scrollTo(0,0);
         }
 
         init();
