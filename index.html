@@ -9,6 +9,7 @@
         :root {
             --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
             --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff; --hl: #ffee58;
+            --text-main: #2c1e14; --text-sub: #444444;
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow-x: hidden; }
         
@@ -18,10 +19,10 @@
         .knot::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border: 1px solid rgba(255,255,255,0.4); }
         .knot-line { width: 1.5px; height: 18px; background: var(--v-red); margin: -1px 0; z-index: 2; }
         .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 32px; box-sizing: border-box; }
-        .site-name-v { writing-mode: vertical-rl; color: #2c1e14; font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
+        .site-name-v { writing-mode: vertical-rl; color: var(--text-main); font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
 
         .sidebar-nav { margin-top: auto; margin-bottom: 35px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .nav-item { cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
+        .nav-item { cursor: pointer; opacity: 0.7; padding: 5px; transition: opacity 0.1s; }
         .nav-item div { color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 900; }
         .nav-item.active { opacity: 1; }
         .nav-item.active div { color: var(--v-orange); }
@@ -33,7 +34,7 @@
             display: flex; align-items: center; background: #fff; 
             border: 2px solid var(--v-red); border-radius: 8px; 
             padding: 3px; visibility: hidden; opacity: 0; 
-            transition: 0.3s; position: absolute; right: 85px; width: 200px; z-index: 10;
+            transition: visibility 0.2s, opacity 0.2s; position: absolute; right: 85px; width: 200px; z-index: 10;
         }
         .search-container.show { visibility: visible; opacity: 1; }
         .search-container input { border: none; outline: none; padding: 6px; flex: 1; font-size: 14px; min-width: 0; }
@@ -46,23 +47,20 @@
 
         #view-container { padding: 0 40px 40px 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.3em; color: var(--v-green); margin-bottom: 12px; font-weight: 700; }
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); margin-bottom: 14px; font-weight: 900; }
         
-        .card-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid #f0f0f0; padding-top: 10px; }
-        .card-list li { font-size: 13px; color: #777; padding: 4px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .card-list li::before { content: "• "; color: var(--v-orange); }
+        .card-list { list-style: none; padding: 0; margin: 0; border-top: 1.5px solid #eee; padding-top: 12px; }
+        .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* 搜索结果摘要样式 */
         .search-snippet { 
-            font-size: 13px; color: #666; line-height: 1.5; margin-top: 10px; 
+            font-size: 14px; color: var(--text-sub); line-height: 1.6; margin-top: 12px; 
             display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; 
-            overflow: hidden; border-top: 1px solid #f0f0f0; padding-top: 10px;
+            overflow: hidden; border-top: 1.5px solid #eee; padding-top: 12px; font-weight: 500;
         }
 
-        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; }
+        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
+        .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; color: #000; }
         .loading { display: flex; justify-content: center; padding-top: 150px; }
         .spinner { width: 32px; height: 32px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid var(--v-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -82,7 +80,7 @@
     <div class="main-content">
         <div class="header-tools">
             <div class="search-container" id="sc">
-                <input type="text" id="sk" placeholder="搜索内容..." onkeypress="if(event.key==='Enter')exeSearch()">
+                <input type="text" id="sk" placeholder="..." onkeypress="if(event.key==='Enter')exeSearch()">
                 <button class="search-btn" onclick="exeSearch()">搜索</button>
             </div>
             <div class="search-trigger" onclick="toggleS()">
@@ -103,32 +101,24 @@
                 const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
                 data = await r.json();
                 showNavMode();
-            } catch (e) { v.innerHTML = '<div style="text-align:center;color:white;margin-top:50px;">加载失败，请刷新重试</div>'; }
+            } catch (e) { v.innerHTML = ''; }
         }
 
-        // 首页模式：包含预览扩展
         function showNavMode() {
             setNav(null);
             const v = document.getElementById('view-container');
-            
-            // 获取前5个标签预览
             const labels = [...new Set(data.flatMap(i => i.labels.map(l => l.name)))].slice(0, 5);
-            // 获取前5篇文章标题
             const recents = data.slice(0, 5).map(i => i.title);
 
             v.innerHTML = `
                 <div class="grid">
                     <div class="card" onclick="showCategories()">
                         <div class="card-h">分类</div>
-                        <ul class="card-list">
-                            ${labels.map(l => `<li>${l}</li>`).join('')}
-                        </ul>
+                        <ul class="card-list">${labels.map(l => `<li># ${l}</li>`).join('')}</ul>
                     </div>
                     <div class="card" onclick="showRecent()">
                         <div class="card-h">最新</div>
-                        <ul class="card-list">
-                            ${recents.map(t => `<li>${t}</li>`).join('')}
-                        </ul>
+                        <ul class="card-list">${recents.map(t => `<li>${t}</li>`).join('')}</ul>
                     </div>
                 </div>`;
         }
@@ -155,7 +145,7 @@
             setNav(null);
             const v = document.getElementById('view-container');
             const f = data.filter(i => i.labels.some(l => l.name === ln));
-            let h = `<div style="margin-bottom:20px; font-weight:bold; color:white; font-size:1.2em;"># ${ln}</div><div class="grid">`;
+            let h = `<div style="margin-bottom:20px; font-weight:900; color:white; font-size:1.2em; font-family:'Noto Serif SC';"># ${ln}</div><div class="grid">`;
             f.forEach(i => h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div></div>`);
             v.innerHTML = h + '</div>';
         }
@@ -174,7 +164,6 @@
             if(c.classList.contains('show')) document.getElementById('sk').focus();
         }
 
-        // 搜索功能增强：标题高亮 + 5行正文片段高亮
         function exeSearch() {
             const k = document.getElementById('sk').value.trim();
             if(!k) return;
@@ -182,31 +171,25 @@
             const v = document.getElementById('view-container');
             const reg = new RegExp(`(${k})`, 'gi');
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
-            
-            let h = `<div style="margin-bottom:20px; color:white;">找到 ${res.length} 篇相关文章</div><div class="grid">`;
+            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} Results</div><div class="grid">`;
             
             res.forEach(i => {
-                const titleHl = i.title.replace(reg, '<span class="hl">$1</span>');
-                // 提取正文片段：找到关键词位置，前后截取，限制在5行左右
-                let bodyPlain = (i.body || "").replace(/[#*`]/g, ''); // 简单过滤Markdown符号
+                let bodyPlain = (i.body || "").replace(/[#*`\-\[\]]/g, ' ');
                 let snippet = "";
                 const idx = bodyPlain.toLowerCase().indexOf(k.toLowerCase());
-                
                 if(idx > -1) {
                     const start = Math.max(0, idx - 40);
                     const end = Math.min(bodyPlain.length, idx + 120);
-                    snippet = (start > 0 ? "..." : "") + bodyPlain.substring(start, end) + "...";
+                    snippet = (start > 0 ? "..." : "") + bodyPlain.substring(start, end).trim() + "...";
                     snippet = snippet.replace(reg, '<span class="hl">$1</span>');
                 } else {
-                    snippet = bodyPlain.substring(0, 100) + "...";
+                    snippet = bodyPlain.substring(0, 100).trim() + "...";
                 }
-
                 h += `<div class="card" onclick="showA(${i.number},'${k}')">
-                        <div class="card-h">${titleHl}</div>
+                        <div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div>
                         <div class="search-snippet">${snippet}</div>
                       </div>`;
             });
-            
             v.innerHTML = h + '</div>';
             document.getElementById('sc').classList.remove('show');
         }
@@ -217,18 +200,16 @@
             const i = data.find(x => x.number === n);
             let b = i.body || '';
             if(k) b = b.replace(new RegExp(`(${k})`, 'gi'), '<span class="hl">$1</span>');
-            v.innerHTML = `<div class="article"><h1 style="font-family:'Noto Serif SC'; color:var(--v-red); margin-top:0;">${i.title}</h1><div style="line-height:1.9; white-space:pre-wrap; color:#333;">${b}</div></div>`;
+            v.innerHTML = `<div class="article"><h1 style="font-family:'Noto Serif SC'; color:var(--v-red); margin-top:0;">${i.title}</h1><div style="line-height:1.9; white-space:pre-wrap; color:var(--text-main); font-weight:500;">${b}</div></div>`;
             window.scrollTo(0,0);
         }
 
         function setNav(id) {
-            document.querySelectorAll('.nav-item').forEach(n => {
-                if(n.id === id) {
-                    n.classList.add('active');
-                } else {
-                    n.classList.remove('active');
-                }
-            });
+            const items = document.querySelectorAll('.nav-item');
+            for(let n of items) {
+                if(n.id === id) n.classList.add('active');
+                else n.classList.remove('active');
+            }
         }
 
         init();
