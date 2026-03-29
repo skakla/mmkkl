@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Folder</title>
+    <title>折立</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -45,7 +45,7 @@
         .icon-search-v .c { width: 12px; height: 12px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
         .icon-search-v .l { width: 3px; height: 7px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
 
-        /* Anti-flicker transition */
+        /* Anti-flicker container style */
         #view-container { padding: 0 40px 40px 40px; transition: opacity 0.15s ease-in-out; opacity: 1; }
         #view-container.loading-fade { opacity: 0; }
 
@@ -74,18 +74,18 @@
     <div class="sidebar">
         <div id="site-logo-container" onclick="renderHome()">
             <div class="knot"></div><div class="knot-line"></div>
-            <div class="paper-tag"><div class="site-name-v">FOLD</div></div>
+            <div class="paper-tag"><div class="site-name-v">折立</div></div>
         </div>
         <div class="sidebar-nav">
-            <div class="nav-item" id="nav-cat" onclick="renderCategories()"><div>CAT</div></div>
-            <div class="nav-item" id="nav-recent" onclick="renderRecent()"><div>NEW</div></div>
+            <div class="nav-item" id="nav-cat" onclick="renderCategories()"><div>分类</div></div>
+            <div class="nav-item" id="nav-recent" onclick="renderRecent()"><div>最新</div></div>
         </div>
     </div>
     <div class="main-content">
         <div class="header-tools">
             <div class="search-container" id="sc">
-                <input type="text" id="sk" placeholder="Search..." onkeypress="if(event.key==='Enter')exeSearch()">
-                <button class="search-btn" onclick="exeSearch()">GO</button>
+                <input type="text" id="sk" placeholder="..." onkeypress="if(event.key==='Enter')exeSearch()">
+                <button class="search-btn" onclick="exeSearch()">搜索</button>
             </div>
             <div class="search-trigger" onclick="toggleS()">
                 <div class="icon-search-v"><div class="c"></div><div class="l"></div></div>
@@ -108,7 +108,6 @@
             } catch (e) { view.innerHTML = ''; }
         }
 
-        // Smooth transition wrapper
         function updateUI(html, navId = null) {
             view.classList.add('loading-fade');
             setTimeout(() => {
@@ -130,11 +129,11 @@
             const html = `
                 <div class="grid">
                     <div class="card" onclick="renderCategories()">
-                        <div class="card-h">Categories</div>
+                        <div class="card-h">分类</div>
                         <ul class="card-list">${labels.map(l => `<li># ${l}</li>`).join('')}</ul>
                     </div>
                     <div class="card" onclick="renderRecent()">
-                        <div class="card-h">Recent</div>
+                        <div class="card-h">最新</div>
                         <ul class="card-list">${recents.map(t => `<li>${t}</li>`).join('')}</ul>
                     </div>
                 </div>`;
@@ -181,7 +180,7 @@
             if(!k) return;
             const reg = new RegExp(`(${k})`, 'gi');
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
-            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} Results</div><div class="grid">`;
+            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} 结果</div><div class="grid">`;
             
             res.forEach(i => {
                 let bodyPlain = (i.body || "").replace(/[#*`\-\[\]]/g, ' ');
