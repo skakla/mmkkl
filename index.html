@@ -15,7 +15,7 @@
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
         /* 侧边栏 - PC端默认 */
-        .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
+        .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
         .knot::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border: 1px solid rgba(255,255,255,0.4); }
@@ -51,7 +51,7 @@
         #view-container.loading-fade { opacity: 0; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; }
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); margin-bottom: 14px; font-weight: 900; }
         
         .card-list { list-style: none; padding: 0; margin: 0; border-top: 1.5px solid #eee; padding-top: 12px; }
@@ -63,8 +63,21 @@
             overflow: hidden; border-top: 1.5px solid #eee; padding-top: 12px; font-weight: 500;
         }
 
-        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; }
-        .article h1 { font-size: 1.8em; margin-bottom: 20px; }
+        /* --- 文章内容样式整合 --- */
+        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); }
+        .article h1 { font-size: 1.8em; margin-bottom: 20px; font-family:'Noto Serif SC'; color:var(--v-red); margin-top:0; }
+        .post-body { line-height: 1.9; white-space: pre-wrap; color: var(--text-main); font-weight: 500; font-size: 16px; word-break: break-word; }
+        
+        /* 支持常见的 GitHub Markdown 语法 */
+        .post-body p { margin: 15px 0; }
+        
+        /* 解析后的图片样式 */
+        .post-body img { max-width: 100% !important; height: auto !important; border-radius: 8px; margin: 15px auto; display: block; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid var(--paper); }
+        
+        /* 解析后的代码块/粗体样式 */
+        .post-body strong { font-weight: 900; color:var(--v-red); }
+        .post-body code:not(pre code) { background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; font-family: monospace; }
+        .post-body pre { background: var(--text-main); color: var(--paper); padding: 15px; border-radius: 8px; overflow-x: auto; margin: 20px 0; font-family: monospace; line-height: 1.5; }
         
         .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; color: #000; }
         .loader-wrap { display: flex; justify-content: center; padding-top: 150px; }
@@ -93,6 +106,7 @@
             .article h1 { font-size: 1.4em; }
             
             .search-container { right: 20px; left: 20px; width: auto; top: 70px; }
+            .post-body { font-size: 15px; line-height: 1.8; }
         }
     </style>
 </head>
@@ -231,11 +245,27 @@
             document.getElementById('sc').classList.remove('show');
         }
 
+        /* --- 此函数集成了对图片和基础 Markdown 语法的支持 --- */
         function renderArticle(n, k = null) {
             const i = data.find(x => x.number === n);
             let b = i.body || '';
+
+            // 1. 解析 Markdown 图片语法: ![alt](url) -> <img> 标签
+            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1">');
+
+            // 2. 解析行内粗体: **text** -> <strong>
+            b = b.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // 3. 解析行内代码: `text` -> <code>
+            b = b.replace(/`(.*?)`/g, '<code>$1</code>');
+
+            // 4. 解析代码块: ```code``` -> <pre><code>
+            b = b.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // 5. 将搜索关键词高亮
             if(k) b = b.replace(new RegExp(`(${k})`, 'gi'), '<span class="hl">$1</span>');
-            const html = `<div class="article"><h1 style="font-family:'Noto Serif SC'; color:var(--v-red); margin-top:0;">${i.title}</h1><div style="line-height:1.9; white-space:pre-wrap; color:var(--text-main); font-weight:500; font-size:16px;">${b}</div></div>`;
+
+            const html = `<div class="article"><h1>${i.title}</h1><div class="post-body">${b}</div></div>`;
             updateUI(html);
         }
 
