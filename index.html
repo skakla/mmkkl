@@ -9,16 +9,17 @@
         :root {
             --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
             --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff;
+            --v-dark-green: #4A5D4E;
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow: hidden; }
         
-        /* 侧边栏 */
+        /* 侧边栏整体布局 */
         .sidebar { 
             position: fixed; top: 0; left: 0; width: 80px; height: 100vh; 
             background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
         }
 
-        /* 网站名称挂件 - 复位对齐 */
+        /* 网站名称挂件 */
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
         .knot::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(255,255,255,0.4); }
@@ -26,47 +27,45 @@
         .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 32px; box-sizing: border-box; }
         .site-name-v { writing-mode: vertical-rl; color: #2c1e14; font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; text-align: center; }
 
-        /* 主内容容器 */
+        /* --- 新增侧边栏底部导航 --- */
+        .sidebar-nav { margin-top: auto; margin-bottom: 30px; display: flex; flex-direction: column; gap: 20px; }
+        .nav-item { 
+            cursor: pointer; display: flex; flex-direction: column; align-items: center; 
+            transition: 0.3s; padding: 10px; border-radius: 8px;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item .icon-text { 
+            writing-mode: vertical-rl; color: var(--paper); font-family: 'Noto Serif SC', serif;
+            font-size: 16px; font-weight: 900; letter-spacing: 2px; opacity: 0.8;
+        }
+        .nav-item.active .icon-text { color: var(--v-orange); opacity: 1; }
+
+        /* 内容区 */
         .main-content { margin-left: 80px; flex: 1; padding: 40px; overflow-y: auto; height: 100vh; box-sizing: border-box; position: relative; }
 
-        /* --- 加载动画 (Spinner) --- */
+        /* 加载动画 */
         .loader-wrapper { display: flex; justify-content: center; align-items: center; height: 100%; }
-        .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top: 4px solid var(--v-red);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.2); border-top: 4px solid var(--v-red); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- 首页：长方形标签卡片 --- */
+        /* 首页：九宫格 */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
-        .grid-item { 
-            background: var(--card); border-radius: 12px; padding: 25px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s;
-            border-left: 6px solid var(--v-orange); display: flex; flex-direction: column; cursor: pointer;
-        }
+        .grid-item { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s; border-left: 6px solid var(--v-orange); cursor: pointer; }
         .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
         .grid-item .label-title { font-family: 'Noto Serif SC', serif; font-size: 1.5em; color: var(--v-green); margin-bottom: 12px; }
         .grid-item .preview-list { list-style: none; padding: 0; margin: 0; font-size: 13px; color: #666; }
-        .grid-item .preview-list li { margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; }
+        .grid-item li { margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; }
 
-        /* --- 列表页：标题列表 --- */
+        /* 列表页 */
         .list-view h2 { font-family: 'Noto Serif SC', serif; color: #fff; margin-bottom: 30px; }
-        .title-card { 
-            background: #fff; border-radius: 8px; padding: 18px 25px; margin-bottom: 15px;
-            cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-            transition: 0.2s; border-left: 5px solid var(--v-red);
-        }
+        .title-card { background: #fff; border-radius: 8px; padding: 18px 25px; margin-bottom: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; border-left: 5px solid var(--v-red); }
         .title-card:hover { background: #fdfaf5; transform: scale(1.005); }
         .title-card h3 { margin: 0; font-family: 'Noto Serif SC', serif; font-size: 1.2em; color: var(--v-green); }
 
-        /* --- 内容页：纯净阅读 --- */
-        .article-view { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; }
-        .article-view h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; font-size: 2em; }
-        .article-content { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; word-break: break-word; }
+        /* 内容页 */
+        .article-view { max-width: 800px; margin: 20px auto; background: #fff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .article-view h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; }
+        .article-content { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -74,16 +73,21 @@
         <div id="site-logo-container" onclick="showHome()">
             <div class="knot"></div>
             <div class="knot-line"></div>
-            <div class="paper-tag">
-                <div class="site-name-v">折立</div>
+            <div class="paper-tag"><div class="site-name-v">折立</div></div>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-item" id="nav-cat" onclick="showHome()">
+                <div class="icon-text">分类</div>
+            </div>
+            <div class="nav-item" id="nav-recent" onclick="showRecent()">
+                <div class="icon-text">最新</div>
             </div>
         </div>
     </div>
     
     <div class="main-content" id="view-container">
-        <div class="loader-wrapper">
-            <div class="spinner"></div>
-        </div>
+        <div class="loader-wrapper"><div class="spinner"></div></div>
     </div>
 
     <script>
@@ -93,19 +97,23 @@
         async function init() {
             try {
                 const res = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
-                if (!res.ok) throw new Error();
                 allIssues = await res.json();
                 showHome();
             } catch (e) {
-                document.getElementById('view-container').innerHTML = 
-                    '<div class="article-view"><h1>同步中断</h1><div class="article-content">请确保 GitHub 仓库公开且网络畅通。</div></div>';
+                document.getElementById('view-container').innerHTML = '<div class="article-view"><h1>同步中断</h1></div>';
             }
         }
 
+        function setActive(id) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(id) document.getElementById(id).classList.add('active');
+        }
+
+        // 分类首页 (九宫格)
         function showHome() {
+            setActive('nav-cat');
             const container = document.getElementById('view-container');
             const labelsMap = {};
-            
             allIssues.forEach(item => {
                 item.labels.forEach(l => {
                     if (!labelsMap[l.name]) labelsMap[l.name] = [];
@@ -118,43 +126,46 @@
                 html += `
                     <div class="grid-item" onclick="showCategory('${name}')">
                         <div class="label-title"># ${name}</div>
-                        <ul class="preview-list">
-                            ${titles.map(t => `<li>${t}</li>`).join('')}
-                        </ul>
-                    </div>
-                `;
+                        <ul class="preview-list">${titles.map(t => `<li>${t}</li>`).join('')}</ul>
+                    </div>`;
             }
-            html += `</div>`;
-            container.innerHTML = html;
+            container.innerHTML = html + `</div>`;
+        }
+
+        // 最新笔记列表
+        function showRecent() {
+            setActive('nav-recent');
+            const container = document.getElementById('view-container');
+            let html = `<div class="list-view"><h2>最新更新</h2>`;
+            allIssues.forEach(item => {
+                html += `
+                    <div class="title-card" onclick="showArticle(${item.number})">
+                        <h3>${item.title}</h3><span style="color:#ccc">→</span>
+                    </div>`;
+            });
+            container.innerHTML = html + `</div>`;
         }
 
         function showCategory(labelName) {
+            setActive(null);
             const container = document.getElementById('view-container');
             const filtered = allIssues.filter(i => i.labels.some(l => l.name === labelName));
-            
             let html = `<div class="list-view"><h2>分类：${labelName}</h2>`;
             filtered.forEach(item => {
-                html += `
-                    <div class="title-card" onclick="showArticle(${item.number})">
-                        <h3>${item.title}</h3>
-                        <span style="color:#ccc">→</span>
-                    </div>
-                `;
+                html += `<div class="title-card" onclick="showArticle(${item.number})"><h3>${item.title}</h3><span>→</span></div>`;
             });
-            html += `</div>`;
-            container.innerHTML = html;
+            container.innerHTML = html + `</div>`;
         }
 
         function showArticle(number) {
+            setActive(null);
             const container = document.getElementById('view-container');
             const item = allIssues.find(i => i.number === number);
-            
             container.innerHTML = `
                 <div class="article-view">
                     <h1>${item.title}</h1>
                     <div class="article-content">${item.body || '暂无内容'}</div>
-                </div>
-            `;
+                </div>`;
             container.scrollTo(0, 0);
         }
 
