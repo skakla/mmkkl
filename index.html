@@ -2,62 +2,95 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>折立</title>
+    <title>折立 - 复古配色</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background-color: #f4f1ea; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; display: flex; overflow: hidden; }
+        /* ==============================
+           【港式复古配色核心 (来自你的图) 】
+           ============================== */
+        :root {
+            --vintage-red: #BB3E00;   /* 图中的红 (作为主Logo和标线色) */
+            --vintage-orange: #F7AD45;/* 图中的橙 (作为副Logo和悬停色) */
+            --vintage-green: #657C6A; /* 图中的绿 (作为侧边栏背景色) */
+            --vintage-gray: #A2B9A7;  /* 图中的灰 (作为主内容背景色) */
+            --text-on-dark: #f4f1ea;  /* 深色背景上的文字色 */
+            --card-white: #ffffff;     /* 卡片白色背景 */
+        }
+
+        /* 1. 全局：主内容背景换成图中的灰 */
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            background-color: var(--vintage-gray); /* 港式灰背景 */
+            font-family: -apple-system, system-ui, sans-serif; 
+            display: flex; overflow: hidden; 
+        }
         
-        /* 1. 侧边栏样式 */
+        /* 2. 侧边栏：背景换成图中的绿 */
         .sidebar { 
             position: fixed; top: 0; left: 0; width: 80px; height: 100vh; 
-            background-color: #7a5230; z-index: 100; 
-            display: flex; flex-direction: column; align-items: center; 
+            background-color: var(--vintage-green); /* 港式绿侧边栏 */
+            z-index: 100; display: flex; flex-direction: column; align-items: center; 
             box-shadow: 2px 0 10px rgba(0,0,0,0.1); 
         }
 
+        /* 3. 站名Logo：改用图中的红，增加质感 */
         .site-name-vertical { 
-            writing-mode: vertical-rl; color: #f4f1ea; 
-            font-family: 'Noto Serif SC', serif; font-size: 26px; font-weight: 700; 
+            writing-mode: vertical-rl; 
+            color: var(--vintage-red); /* 复古红文字 */
+            font-family: 'Noto Serif SC', serif; 
+            font-size: 26px; font-weight: 700; 
             letter-spacing: 10px; margin: 40px 0; cursor: pointer; 
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.2); /* 微微的亮边，让它更跳 */
         }
+        .site-name-vertical:hover { color: var(--vintage-orange); } /* 悬停变成港式橙 */
 
-        /* 标签改为横向显示 */
+        /* 4. 分类标签：增加对比度和复古感 */
         .nav-label { 
-            color: rgba(244, 241, 234, 0.6); font-size: 15px; margin: 15px 0; 
-            cursor: pointer; transition: 0.2s; position: relative; 
-            padding: 5px 0; width: 60px; text-align: center;
+            color: rgba(244, 241, 234, 0.7); /* 半透明的米白 */
+            font-size: 15px; margin: 15px 0; cursor: pointer; 
+            transition: 0.2s; position: relative; padding: 5px 0; 
+            width: 60px; text-align: center; font-weight: bold;
         }
-
-        /* 选中状态：不跳动 */
+        .nav-label:hover { color: #fff; transform: translateY(-2px); }
         .nav-label.active { color: #fff; text-shadow: 0 0 1px #fff; }
+        
+        /* 选中标线：用港式橙，醒目 */
         .nav-label.active::after { 
             content: ''; position: absolute; bottom: -2px; left: 20%; 
-            width: 60%; height: 2px; background-color: #fff; border-radius: 2px; 
+            width: 60%; height: 2px; 
+            background-color: var(--vintage-orange); /* 复古橙标线 */
+            border-radius: 2px; 
         }
 
-        /* 2. 内容区样式 */
+        /* 5. 内容区卡片：保持精致宋体标题 */
         .main-content { margin-left: 80px; flex: 1; padding: 40px; overflow-y: auto; height: 100vh; box-sizing: border-box; }
         
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .card { 
-            background: #fff; border-radius: 8px; padding: 30px; margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #7a5230;
-            position: relative; animation: fadeInUp 0.5s ease backwards;
+            background: var(--card-white); border-radius: 12px; padding: 30px; margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(101,124,106,0.15); /* 阴影颜色也统一到港式绿系 */
+            border-left: 5px solid var(--vintage-red); /* 卡片左侧红边 */
+            position: relative; animation: fadeInUp 0.5s ease backwards; 
+            transition: 0.3s;
         }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(101,124,106,0.25); }
         
         .card h3 { 
-            margin-top: 0; color: #7a5230; font-size: 1.5em; 
-            font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f0f0f0; 
-            padding-bottom: 12px; margin-bottom: 18px; 
+            margin-top: 0; color: var(--vintage-green); /* 标题改用港式绿 */
+            font-size: 1.6em; font-family: 'Noto Serif SC', serif; 
+            border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 18px; 
         }
-        .card-body { color: #444; line-height: 1.8; white-space: pre-wrap; padding-bottom: 40px; font-size: 1.05em; }
+        .card-body { color: #444; line-height: 1.8; white-space: pre-wrap; padding-bottom: 45px; font-size: 1.05em; }
 
-        .card-footer-tags { position: absolute; right: 20px; bottom: 15px; display: flex; gap: 8px; }
-        .inner-tag { padding: 2px 10px; border-radius: 4px; font-size: 11px; color: #fff; font-weight: bold; }
+        /* 6. 右下角分类标签：统一配色 */
+        .card-footer-tags { position: absolute; right: 20px; bottom: 18px; display: flex; gap: 8px; }
+        .inner-tag { 
+            padding: 3px 12px; border-radius: 15px; /* 改成更复古的小药丸形状 */
+            font-size: 11px; color: #fff; font-weight: bold; 
+            border: 1px solid rgba(255,255,255,0.3);
+            background: var(--vintage-green); /* 默认分类用港式绿背景 */
+        }
     </style>
 </head>
 <body>
@@ -66,12 +99,11 @@
         <div id="label-list"></div>
     </div>
     <div class="main-content">
-        <div id="feed">正在载入...</div>
+        <div id="feed">正在同步云端笔记...</div>
     </div>
 
     <script>
         let allIssues = [];
-        // 请确保这里的仓库名是正确的
         const repoPath = 'skakla/mmkkl';
 
         fetch(`https://api.github.com/repos/${repoPath}/issues?per_page=100`)
@@ -106,13 +138,18 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.style.animationDelay = (index * 0.1) + 's';
+                
+                // 抓取 GitHub 原生颜色作为小药丸背景
                 let tagsHtml = item.labels.map(l => 
                     `<span class="inner-tag" style="background:#${l.color}">${l.name}</span>`
                 ).join('');
+
                 card.innerHTML = `
                     <h3>${item.title}</h3>
                     <div class="card-body">${item.body}</div>
-                    <div class="card-footer-tags">${tagsHtml || '<span class="inner-tag" style="background:#bbb">未分类</span>'}</div>
+                    <div class="card-footer-tags">
+                        ${tagsHtml || '<span class="inner-tag" style="background:var(--vintage-green)">未分类</span>'}
+                    </div>
                 `;
                 feed.appendChild(card);
             });
