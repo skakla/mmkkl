@@ -18,16 +18,27 @@
             background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
         }
 
-        /* 网站名称挂件 - 绝对居中复位 */
+        /* 网站名称挂件 - 复位对齐 */
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
         .knot::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(255,255,255,0.4); }
         .knot-line { width: 1.5px; height: 18px; background: var(--v-red); margin: -1px 0; z-index: 2; }
-        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1); transform: rotate(-1.5deg); display: flex; justify-content: center; }
+        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1); transform: rotate(-1.5deg); display: flex; justify-content: center; width: 32px; box-sizing: border-box; }
         .site-name-v { writing-mode: vertical-rl; color: #2c1e14; font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; text-align: center; }
 
         /* 主内容容器 */
-        .main-content { margin-left: 80px; flex: 1; padding: 40px; overflow-y: auto; height: 100vh; box-sizing: border-box; }
+        .main-content { margin-left: 80px; flex: 1; padding: 40px; overflow-y: auto; height: 100vh; box-sizing: border-box; position: relative; }
+
+        /* --- 加载动画 (Spinner) --- */
+        .loader-wrapper { display: flex; justify-content: center; align-items: center; height: 100%; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid var(--v-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- 首页：长方形标签卡片 --- */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
@@ -49,13 +60,13 @@
             display: flex; justify-content: space-between; align-items: center;
             transition: 0.2s; border-left: 5px solid var(--v-red);
         }
-        .title-card:hover { background: #fdfaf5; transform: scale(1.01); }
+        .title-card:hover { background: #fdfaf5; transform: scale(1.005); }
         .title-card h3 { margin: 0; font-family: 'Noto Serif SC', serif; font-size: 1.2em; color: var(--v-green); }
 
         /* --- 内容页：纯净阅读 --- */
-        .article-view { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .article-view h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; }
-        .article-content { color: #333; line-height: 1.9; font-size: 17px; white-space: pre-wrap; }
+        .article-view { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; }
+        .article-view h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; font-size: 2em; }
+        .article-content { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; word-break: break-word; }
     </style>
 </head>
 <body>
@@ -70,7 +81,9 @@
     </div>
     
     <div class="main-content" id="view-container">
-        <div id="loading">同步中...</div>
+        <div class="loader-wrapper">
+            <div class="spinner"></div>
+        </div>
     </div>
 
     <script>
@@ -80,14 +93,15 @@
         async function init() {
             try {
                 const res = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
+                if (!res.ok) throw new Error();
                 allIssues = await res.json();
                 showHome();
             } catch (e) {
-                document.getElementById('view-container').innerHTML = "同步中断，请检查网络。";
+                document.getElementById('view-container').innerHTML = 
+                    '<div class="article-view"><h1>同步中断</h1><div class="article-content">请确保 GitHub 仓库公开且网络畅通。</div></div>';
             }
         }
 
-        // 1. 首页：九宫格长方形
         function showHome() {
             const container = document.getElementById('view-container');
             const labelsMap = {};
@@ -114,7 +128,6 @@
             container.innerHTML = html;
         }
 
-        // 2. 分类页：标题列表
         function showCategory(labelName) {
             const container = document.getElementById('view-container');
             const filtered = allIssues.filter(i => i.labels.some(l => l.name === labelName));
@@ -132,7 +145,6 @@
             container.innerHTML = html;
         }
 
-        // 3. 内容页：新的整页内容
         function showArticle(number) {
             const container = document.getElementById('view-container');
             const item = allIssues.find(i => i.number === number);
@@ -143,7 +155,7 @@
                     <div class="article-content">${item.body || '暂无内容'}</div>
                 </div>
             `;
-            container.scrollTo(0, 0); // 回到顶部
+            container.scrollTo(0, 0);
         }
 
         init();
