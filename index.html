@@ -12,9 +12,9 @@
             --text-main: #2c1e14; --text-sub: #444444;
             --side-w: 80px;
         }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; min-height: 100%; background: var(--v-gray); font-family: sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* 侧边栏 */
+        /* 侧边栏布局 */
         .sidebar { position: fixed; top: 0; left: 0; width: var(--side-w); height: 100vh; background: var(--v-green); z-index: 1000; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 22px; height: 22px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; }
@@ -24,69 +24,68 @@
         .site-name-v { writing-mode: vertical-rl; color: var(--text-main); font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
 
         .sidebar-nav { margin-top: auto; margin-bottom: 35px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .nav-item { cursor: pointer; opacity: 0.7; padding: 5px; }
+        .nav-item { cursor: pointer; opacity: 0.6; padding: 5px; transition: 0.2s; }
         .nav-item div { color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 15px; font-weight: 900; }
-        .nav-item.active { opacity: 1; }
+        .nav-item.active { opacity: 1; transform: scale(1.1); }
         .nav-item.active div { color: var(--v-orange); }
 
-        /* 主体 */
-        .main-content { margin-left: var(--side-w); min-height: 100vh; padding-bottom: 20px; }
-        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 30px; max-width: 1100px; margin: 0 auto; height: 50px; position: relative; }
+        /* 主体内容区 */
+        .main-content { margin-left: var(--side-w); min-height: 100vh; display: flex; flex-direction: column; }
+        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 30px; max-width: 1100px; margin: 0 auto; width: 100%; box-sizing: border-box; height: 94px; position: relative; }
 
-        /* 搜索 */
-        .search-container { 
-            display: flex; align-items: center; background: #fff; 
-            border: 2px solid var(--v-red); border-radius: 8px; 
-            padding: 3px; visibility: hidden; opacity: 0; 
-            transition: visibility 0.2s, opacity 0.2s; position: absolute; right: 85px; width: 200px; z-index: 10;
-        }
+        /* 搜索框 */
+        .search-container { display: flex; align-items: center; background: #fff; border: 2.5px solid var(--v-red); border-radius: 8px; padding: 4px; visibility: hidden; opacity: 0; transition: 0.2s; position: absolute; right: 85px; width: 200px; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .search-container.show { visibility: visible; opacity: 1; }
         .search-container input { border: none; outline: none; padding: 6px; flex: 1; font-size: 14px; min-width: 0; }
-        .search-btn { background: var(--v-red); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .search-btn { background: var(--v-red); color: white; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
 
-        .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; }
-        .icon-search-v { width: 18px; height: 18px; position: relative; }
-        .icon-search-v .c { width: 12px; height: 12px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
-        .icon-search-v .l { width: 3px; height: 7px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
+        .search-trigger { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; background: rgba(255,255,255,0.2); }
+        .icon-search-v { width: 20px; height: 20px; position: relative; }
+        .icon-search-v .c { width: 13px; height: 13px; border: 3px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
+        .icon-search-v .l { width: 3.5px; height: 8px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
 
-        /* 内容容器 */
-        #view-container { padding: 0 40px 40px 40px; transition: opacity 0.1s; opacity: 1; min-height: 200px; }
-        #view-container.loading-fade { opacity: 0; }
+        /* 渲染容器：确保布局独立 */
+        #view-container { padding: 0 40px 40px 40px; flex: 1; width: 100%; box-sizing: border-box; }
+        .fade-in { animation: fadeIn 0.25s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
+        /* 网格卡片 */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; max-width: 1100px; margin: 0 auto; }
         
-        /* 卡片设计 - 核心：不设固定高度，防止条状残留 */
-        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-3px); }
-        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); font-weight: 900; margin: 0; line-height: 1.2; }
+        .card { background: var(--card); border-radius: 12px; padding: 25px; border-left: 6px solid var(--v-orange); cursor: pointer; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.06); transition: 0.2s; position: relative; }
+        .card:active { transform: scale(0.98); }
+        .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.35em; color: var(--v-green); font-weight: 900; margin: 0; word-break: break-all; }
         
-        /* 聚合卡片里的列表 */
-        .card-list { list-style: none; padding: 0; margin: 14px 0 0 0; border-top: 1.5px solid #eee; padding-top: 12px; }
-        .card-list li { font-size: 14px; color: var(--text-sub); padding: 5px 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-list { list-style: none; padding: 0; margin: 15px 0 0 0; border-top: 1.5px solid #eee; padding-top: 15px; }
+        .card-list li { font-size: 14px; color: var(--text-sub); padding: 6px 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* 文章详情 */
-        .article { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .post-body img { max-width: 100%; border-radius: 8px; display: block; margin: 20px 0; }
-        .post-body strong { font-weight: 900; color: var(--v-red); }
-        .hl { background: var(--hl); font-weight: bold; border-radius: 2px; padding: 0 2px; color: #000; }
-        
-        /* 加载动画 */
-        .loader-wrap { display: flex; justify-content: center; padding-top: 100px; width: 100%; }
-        .spinner { width: 32px; height: 32px; border: 4px solid rgba(0,0,0,0.05); border-top: 4px solid var(--v-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        /* 文章详情页 */
+        .article-view { max-width: 850px; margin: 0 auto; background: #fff; padding: 45px; border-radius: 12px; box-shadow: 0 6px 25px rgba(0,0,0,0.08); }
+        .article-view h1 { font-family: 'Noto Serif SC'; font-size: 2em; color: var(--v-red); margin: 0 0 25px 0; line-height: 1.3; }
+        .post-body { line-height: 1.9; white-space: pre-wrap; color: var(--text-main); font-size: 17px; font-weight: 500; }
+        .post-body img { max-width: 100%; border-radius: 8px; margin: 25px auto; display: block; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .post-body strong { color: var(--v-red); font-weight: 900; }
 
-        /* 响应式 */
+        /* 加载状态 */
+        .loader-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; width: 100%; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: var(--v-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 移动端适配 */
         @media screen and (max-width: 768px) {
             :root { --side-w: 0px; }
-            .sidebar { top: auto; bottom: 0; width: 100%; height: 60px; flex-direction: row; padding: 0 20px; box-sizing: border-box; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+            .sidebar { top: auto; bottom: 0; width: 100%; height: 65px; flex-direction: row; padding: 0 15px; box-sizing: border-box; box-shadow: 0 -2px 15px rgba(0,0,0,0.15); }
             #site-logo-container { margin-top: 0; flex-direction: row; gap: 10px; }
             .knot-line { display: none; }
-            .site-name-v { writing-mode: horizontal-tb; font-size: 16px; letter-spacing: 2px; }
-            .sidebar-nav { margin: 0 0 0 auto; flex-direction: row; gap: 25px; }
-            .main-content { margin-left: 0; padding-bottom: 80px; }
-            #view-container { padding: 0 20px 20px 20px; }
+            .site-name-v { writing-mode: horizontal-tb; font-size: 17px; letter-spacing: 1px; }
+            .sidebar-nav { margin: 0 0 0 auto; flex-direction: row; gap: 20px; }
+            .main-content { margin-left: 0; padding-bottom: 90px; }
+            .header-tools { padding: 15px 20px; height: 75px; }
+            #view-container { padding: 0 15px 20px 15px; }
             .grid { grid-template-columns: 1fr; gap: 15px; }
-            .article { padding: 25px 20px; }
+            .article-view { padding: 30px 20px; border-radius: 8px; }
+            .article-view h1 { font-size: 1.6em; }
+            .search-container { right: 15px; left: 15px; width: auto; top: 75px; }
         }
     </style>
 </head>
@@ -104,7 +103,7 @@
     <div class="main-content">
         <div class="header-tools">
             <div class="search-container" id="sc">
-                <input type="text" id="sk" placeholder="搜索..." onkeypress="if(event.key==='Enter')exeSearch()">
+                <input type="text" id="sk" placeholder="搜索文章..." onkeypress="if(event.key==='Enter')exeSearch()">
                 <button class="search-btn" onclick="exeSearch()">搜索</button>
             </div>
             <div class="search-trigger" onclick="toggleS()">
@@ -122,26 +121,34 @@
         async function init() {
             renderLoading();
             try {
+                // 加时间戳防止 API 缓存
                 const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
+                if (!r.ok) throw new Error();
                 data = await r.json();
                 renderHome();
-            } catch (e) { view.innerHTML = '<div style="color:white;text-align:center">加载失败</div>'; }
+            } catch (e) { 
+                view.innerHTML = '<div style="color:white;text-align:center;padding-top:100px;font-weight:bold;">网络连接异常，请刷新页面</div>'; 
+            }
         }
 
         function renderLoading() {
-            view.innerHTML = '<div class="loader-wrap"><div class="spinner"></div></div>';
+            view.innerHTML = '<div class="loader-wrap"><div class="spinner"></div><div style="color:white;margin-top:15px;font-size:14px;font-weight:bold;">加载中...</div></div>';
         }
 
-        // 核心更新函数：确保每次渲染新内容前都彻底清空旧内容
+        // 核心更新逻辑：强制销毁并重建内容，彻底解决视频中的“长条残留”
         function updateUI(html, navId = null) {
-            view.classList.add('loading-fade');
-            setTimeout(() => {
-                view.innerHTML = ''; // 物理清空
-                view.insertAdjacentHTML('beforeend', html); // 注入新内容
-                setNav(navId);
-                view.classList.remove('loading-fade');
-                window.scrollTo(0,0);
-            }, 50);
+            window.scrollTo(0,0);
+            view.style.display = 'none'; // 先隐藏，防止视觉闪烁
+            view.innerHTML = ''; 
+            
+            const content = document.createElement('div');
+            content.className = 'fade-in';
+            content.innerHTML = html;
+            
+            view.appendChild(content);
+            view.style.display = 'block'; // 重新显示
+            
+            setNav(navId);
         }
 
         function renderHome() {
@@ -149,17 +156,15 @@
             const recents = data.slice(0, 5).map(i => i.title);
 
             let h = '<div class="grid">';
-            // 只有有分类时才显示分类卡片
-            if(labels.length > 0) {
+            if(labels.length) {
                 h += `<div class="card" onclick="renderCategories()">
-                        <div class="card-h">分类</div>
+                        <div class="card-h">分类主题</div>
                         <ul class="card-list">${labels.map(l => `<li># ${l}</li>`).join('')}</ul>
                       </div>`;
             }
-            // 只有有文章时才显示最新卡片
-            if(recents.length > 0) {
+            if(recents.length) {
                 h += `<div class="card" onclick="renderRecent()">
-                        <div class="card-h">最新</div>
+                        <div class="card-h">最近更新</div>
                         <ul class="card-list">${recents.map(t => `<li>${t}</li>`).join('')}</ul>
                       </div>`;
             }
@@ -175,7 +180,7 @@
             }));
             
             let h = '<div class="grid">';
-            Object.keys(m).forEach(name => {
+            Object.keys(m).sort().forEach(name => {
                 h += `<div class="card" onclick="renderLabelPosts('${name}')">
                         <div class="card-h"># ${name}</div>
                         <ul class="card-list">${m[name].map(t => `<li>${t}</li>`).join('')}</ul>
@@ -188,7 +193,6 @@
         function renderRecent() {
             let h = '<div class="grid">';
             data.forEach(i => {
-                // 普通卡片不带 card-list 结构，避免产生空条
                 h += `<div class="card" onclick="renderArticle(${i.number})">
                         <div class="card-h">${i.title}</div>
                       </div>`;
@@ -199,7 +203,7 @@
 
         function renderLabelPosts(ln) {
             const f = data.filter(i => i.labels.some(l => l.name === ln));
-            let h = `<div style="margin-bottom:25px; font-weight:900; color:white; font-size:1.2em; font-family:'Noto Serif SC';"># ${ln}</div><div class="grid">`;
+            let h = `<div style="margin-bottom:25px; font-weight:900; color:white; font-size:1.3em; font-family:'Noto Serif SC';"># 正在阅读：${ln}</div><div class="grid">`;
             f.forEach(i => {
                 h += `<div class="card" onclick="renderArticle(${i.number})">
                         <div class="card-h">${i.title}</div>
@@ -211,14 +215,20 @@
 
         function renderArticle(n, k = null) {
             const i = data.find(x => x.number === n);
-            let b = i.body || '';
-            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1">');
-            b = b.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            if(k) b = b.replace(new RegExp(`(${k})`, 'gi'), '<span class="hl">$1</span>');
+            let b = i.body || '（暂无内容）';
             
-            const html = `<div class="article">
+            // 基础 Markdown 解析
+            b = b.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" alt="图片">');
+            b = b.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            if(k) {
+                const reg = new RegExp(`(${k})`, 'gi');
+                b = b.replace(reg, '<span class="hl">$1</span>');
+            }
+            
+            const html = `<div class="article-view">
                             <h1>${i.title}</h1>
-                            <div class="post-body" style="line-height:1.9; white-space:pre-wrap; color:var(--text-main); font-weight:500; font-size:16px;">${b}</div>
+                            <div class="post-body">${b}</div>
                           </div>`;
             updateUI(html);
         }
@@ -234,7 +244,7 @@
             if(!k) return;
             const reg = new RegExp(`(${k})`, 'gi');
             const res = data.filter(i => (i.title + (i.body||'')).match(reg));
-            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">${res.length} 个结果</div><div class="grid">`;
+            let h = `<div style="margin-bottom:20px; color:white; font-weight:bold;">搜索 "${k}"：共找到 ${res.length} 篇</div><div class="grid">`;
             res.forEach(i => {
                 h += `<div class="card" onclick="renderArticle(${i.number},'${k}')">
                         <div class="card-h">${i.title.replace(reg, '<span class="hl">$1</span>')}</div>
