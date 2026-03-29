@@ -13,7 +13,7 @@
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow: hidden; }
         
-        /* Sidebar & Navigation */
+        /* Sidebar */
         .sidebar { position: fixed; top: 0; left: 0; width: 80px; height: 100vh; background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; }
         #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
@@ -24,40 +24,44 @@
 
         .sidebar-nav { margin-top: auto; margin-bottom: 30px; display: flex; flex-direction: column; gap: 20px; }
         .nav-item { cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 10px; border-radius: 8px; transition: 0.3s; }
-        .nav-item:hover { background: rgba(255,255,255,0.1); }
         .nav-item div { writing-mode: vertical-rl; color: var(--paper); font-family: 'Noto Serif SC', serif; font-size: 16px; font-weight: 900; letter-spacing: 2px; opacity: 0.8; }
         .nav-item.active div { color: var(--v-orange); opacity: 1; }
 
         .main-content { margin-left: 80px; flex: 1; overflow-y: auto; height: 100vh; box-sizing: border-box; }
 
         /* Header & Search */
-        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 40px; max-width: 1100px; margin: 0 auto; position: relative; }
-        .search-box { position: relative; width: 0; overflow: hidden; opacity: 0; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; }
-        .search-box.open { width: 280px; opacity: 1; }
-        .search-box input { width: 100%; padding: 10px 15px; background: #fff; border: 2px solid var(--v-red); border-radius: 4px; outline: none; font-size: 14px; }
+        .header-tools { display: flex; justify-content: flex-end; align-items: center; padding: 25px 40px; max-width: 1100px; margin: 0 auto; }
+        .search-container { display: flex; align-items: center; gap: 8px; position: relative; }
+        .search-box { width: 0; overflow: hidden; opacity: 0; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 8px; }
+        .search-box.open { width: 350px; opacity: 1; }
+        .search-box input { flex: 1; padding: 10px 12px; background: #fff; border: 2px solid var(--v-red); border-radius: 4px; outline: none; font-size: 14px; }
         
-        .icon-search-v { width: 22px; height: 22px; position: relative; cursor: pointer; margin-left: 15px; }
-        .icon-search-v .c { width: 15px; height: 15px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; }
-        .icon-search-v .l { width: 2.5px; height: 9px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); }
-        .icon-search-v:hover .c, .icon-search-v:hover .l { border-color: var(--v-orange); background: var(--v-orange); }
+        .search-btn { background: #fff; color: var(--v-red); border: 2px solid var(--v-red); border-radius: 4px; padding: 10px 15px; cursor: pointer; font-size: 14px; font-weight: 900; transition: 0.3s; }
+        .search-btn:hover { background: var(--v-red); color: white; }
 
-        /* Grid UI */
+        .icon-search-v { width: 22px; height: 22px; position: relative; cursor: pointer; margin-left: 15px; transition: transform 0.1s ease; }
+        .icon-search-v .c { width: 15px; height: 15px; border: 2.5px solid var(--v-red); border-radius: 50%; position: absolute; top: 0; left: 0; transition: 0.2s; }
+        .icon-search-v .l { width: 2.5px; height: 9px; background: var(--v-red); position: absolute; bottom: -1px; right: -1px; transform: rotate(-45deg); transition: 0.2s; }
+        .icon-search-v:hover .c { border-color: var(--v-orange); }
+        .icon-search-v:hover .l { background: var(--v-orange); }
+        .icon-search-v.active { transform: scale(0.8); }
+
+        /* Grid */
         #view-container { padding: 0 40px 40px 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
         .card { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 6px solid var(--v-orange); cursor: pointer; transition: 0.3s; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
         .card.search-mode { border-left-color: var(--v-red); }
-        
         .card-h { font-family: 'Noto Serif SC', serif; font-size: 1.5em; color: var(--v-green); margin-bottom: 15px; }
         .card-list { list-style: none; padding: 0; margin: 0; font-size: 13px; color: #666; }
-        .card-list li { margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-list li { margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; overflow: hidden; text-overflow: ellipsis; }
         .card-preview { color: #555; line-height: 1.7; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
         .hl { background: var(--hl); color: #000; font-weight: bold; padding: 0 2px; }
 
-        /* Article UI */
-        .article { max-width: 850px; margin: 0 auto; background: #fff; padding: 45px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .article h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; font-size: 2.2em; }
-        .article-body { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; word-break: break-word; }
+        /* Article */
+        .article { max-width: 850px; margin: 0 auto; background: #fff; padding: 45px; border-radius: 12px; }
+        .article h1 { font-family: 'Noto Serif SC', serif; color: var(--v-green); border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; }
+        .article-body { color: #333; line-height: 2; font-size: 17px; white-space: pre-wrap; }
 
         .loading { display: flex; justify-content: center; align-items: center; height: 50vh; }
         .spinner { width: 30px; height: 30px; border: 3px solid #eee; border-top: 3px solid var(--v-red); border-radius: 50%; animation: s 1s linear infinite; }
@@ -76,23 +80,23 @@
             <div class="nav-item" id="nav-recent" onclick="showRecent()"><div>最新</div></div>
         </div>
     </div>
-    
     <div class="main-content">
         <div class="header-tools">
-            <div class="search-box" id="sb">
-                <input type="text" id="sk" placeholder="搜索关键词..." onkeypress="if(event.key==='Enter')exeSearch()">
-            </div>
-            <div class="icon-search-v" onclick="toggleS()">
-                <div class="c"></div><div class="l"></div>
+            <div class="search-container">
+                <div class="search-box" id="sb">
+                    <input type="text" id="sk" placeholder="..." onkeypress="if(event.key==='Enter')exeSearch()">
+                    <button class="search-btn" onclick="exeSearch()">搜索</button>
+                </div>
+                <div class="icon-search-v" id="stoggle" onmousedown="this.classList.add('active')" onmouseup="this.classList.remove('active')" onclick="toggleS()">
+                    <div class="c"></div><div class="l"></div>
+                </div>
             </div>
         </div>
         <div id="view-container"></div>
     </div>
-
     <script>
         const repo = 'skakla/mmkkl';
         let data = [];
-
         async function init() {
             const v = document.getElementById('view-container');
             v.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
@@ -100,28 +104,24 @@
                 const r = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
                 data = await r.json();
                 showHome();
-            } catch (e) { v.innerHTML = '<div class="article"><h1>Error</h1></div>'; }
+            } catch (e) { v.innerHTML = 'Error'; }
         }
-
         function setNav(id) {
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(id) document.getElementById(id).classList.add('active');
         }
-
         function toggleS() {
             const b = document.getElementById('sb');
             if(!b.classList.contains('open')) { b.classList.add('open'); document.getElementById('sk').focus(); }
-            else { exeSearch(); }
+            else { if(!document.getElementById('sk').value.trim()) b.classList.remove('open'); }
         }
-
         function exeSearch() {
             const k = document.getElementById('sk').value.trim();
-            if(!k) { document.getElementById('sb').classList.remove('open'); return; }
+            if(!k) return;
             setNav(null);
             const v = document.getElementById('view-container');
             const reg = new RegExp(`(${k})`, 'gi');
             const res = data.filter(i => (i.title + i.body).match(reg));
-
             let h = `<div class="res-info">找到 ${res.length} 条关于 <span class="hl">${k}</span> 的结果</div><div class="grid">`;
             res.forEach(i => {
                 const t = i.title.replace(reg, '<span class="hl">$1</span>');
@@ -131,14 +131,12 @@
             v.innerHTML = h + '</div>';
             document.getElementById('sb').classList.remove('open');
         }
-
         function getP(c, k, r) {
             const idx = c.toLowerCase().indexOf(k.toLowerCase());
             if(idx === -1) return c.substring(0, 150).replace(r, '<span class="hl">$1</span>');
             const s = Math.max(0, idx - 40), e = Math.min(c.length, idx + 120);
             return (s > 0 ? '...' : '') + c.substring(s, e).replace(r, '<span class="hl">$1</span>') + (e < c.length ? '...' : '');
         }
-
         function showHome() {
             setNav('nav-cat');
             const v = document.getElementById('view-container');
@@ -153,30 +151,25 @@
             }
             v.innerHTML = h + '</div>';
         }
-
         function showRecent() {
             setNav('nav-recent');
             const v = document.getElementById('view-container');
             let h = '<div class="grid">';
             data.forEach(i => {
-                const p = (i.body || '').substring(0, 120);
-                h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div><div class="card-preview">${p}...</div></div>`;
+                h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div><div class="card-preview">${(i.body || '').substring(0, 120)}...</div></div>`;
             });
             v.innerHTML = h + '</div>';
         }
-
         function showC(ln) {
             setNav(null);
             const v = document.getElementById('view-container');
             const f = data.filter(i => i.labels.some(l => l.name === ln));
             let h = `<div class="res-info" style="font-size:1.8em; font-family:'Noto Serif SC',serif">分类：${ln}</div><div class="grid">`;
             f.forEach(i => {
-                const p = (i.body || '').substring(0, 120);
-                h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div><div class="card-preview">${p}...</div></div>`;
+                h += `<div class="card" onclick="showA(${i.number})"><div class="card-h">${i.title}</div><div class="card-preview">${(i.body || '').substring(0, 120)}...</div></div>`;
             });
             v.innerHTML = h + '</div>';
         }
-
         function showA(n, k = null) {
             setNav(null);
             const v = document.getElementById('view-container');
@@ -186,7 +179,6 @@
             v.innerHTML = `<div class="article"><h1>${i.title}</h1><div class="article-body">${b}</div></div>`;
             v.scrollTo(0,0);
         }
-
         init();
     </script>
 </body>
