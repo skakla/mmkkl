@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>折立 - 完美版</title>
+    <title>折立 - 九宫格版</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --v-red: #BB3E00;   /* 中国结红 */
-            --v-orange: #F7AD45; /* 暖橙 */
-            --v-green: #657C6A;  /* 侧边绿 */
-            --v-gray: #A2B9A7;   /* 背景底色 */
-            --paper: #fdf6e3;    /* 纸片色 */
+            --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
+            --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff;
         }
-
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; display: flex; overflow: hidden; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; overflow: hidden; }
         
         /* 侧边栏 */
         .sidebar { 
@@ -22,138 +18,154 @@
             background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
         }
 
-        /* --- 【精致对齐的中国结吊饰】 --- */
-        #site-logo-container {
-            margin-top: 25px; /* 距离顶部位置 */
-            display: flex; flex-direction: column; align-items: center; cursor: pointer;
-        }
+        /* 中国结吊饰 */
+        #site-logo-container { margin-top: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .knot { width: 24px; height: 24px; background: var(--v-red); transform: rotate(45deg); border-radius: 2px; position: relative; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+        .knot::after { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px solid rgba(255,255,255,0.4); }
+        .knot-line { width: 1.5px; height: 20px; background: var(--v-red); margin: -2px 0; z-index: 2; }
+        .paper-tag { background: var(--paper); padding: 10px 6px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1); transform: rotate(-1.5deg); }
+        .site-name-v { writing-mode: vertical-rl; color: #2c1e14; font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 900; letter-spacing: 4px; }
 
-        /* 中国结核心 */
-        .knot {
-            width: 24px; height: 24px; background: var(--v-red);
-            transform: rotate(45deg); border-radius: 2px;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.2); position: relative;
-        }
-        /* 内部镂空感 */
-        .knot::after {
-            content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
-            border: 1px solid rgba(255,255,255,0.4); border-radius: 1px;
-        }
+        /* 内容区 */
+        .main-content { margin-left: 80px; flex: 1; padding: 40px; overflow-y: auto; height: 100vh; box-sizing: border-box; transition: 0.3s; }
 
-        /* 细红线 */
-        .knot-line { 
-            width: 1.5px; height: 20px; background: var(--v-red); 
-            margin: -2px 0; /* 负边距确保衔接 */
-            z-index: 2;
+        /* --- 九宫格标签页 --- */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 20px; 
+            max-width: 1000px; margin: 0 auto;
         }
+        .grid-item { 
+            aspect-ratio: 1 / 1; background: var(--card); border-radius: 15px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-bottom: 5px solid var(--v-orange);
+        }
+        .grid-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .grid-item .label-name { font-family: 'Noto Serif SC', serif; font-size: 1.4em; color: var(--v-green); margin-bottom: 5px; }
+        .grid-item .count { font-size: 12px; color: #999; }
 
-        /* 复古纸片 */
-        .paper-tag {
-            background: var(--paper); padding: 10px 6px; border-radius: 2px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1);
-            transform: rotate(-1.5deg); display: flex; justify-content: center; align-items: center;
+        /* --- 折叠卡片样式 --- */
+        .collapse-card { 
+            background: #fff; border-radius: 10px; margin-bottom: 15px; 
+            overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            border-left: 5px solid var(--v-red);
         }
-
-        /* 纸片上的字 */
-        .site-name-v { 
-            writing-mode: vertical-rl; color: #2c1e14; 
-            font-family: 'Noto Serif SC', serif; font-size: 18px; 
-            font-weight: 900; letter-spacing: 4px; text-align: center;
+        .collapse-header { 
+            padding: 18px 25px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            background: #fff; transition: 0.2s;
         }
-
-        /* 标签导航 */
-        #label-list { margin-top: 50px; width: 100%; }
-        .nav-label { 
-            color: rgba(255, 255, 255, 0.6); font-size: 14px; margin: 20px 0; 
-            cursor: pointer; text-align: center; font-weight: bold; position: relative;
-        }
-        .nav-label.active { color: #fff; }
-        .nav-label.active::after { 
-            content: ''; position: absolute; bottom: -5px; left: 25%; 
-            width: 50%; height: 2px; background: var(--v-orange); 
-        }
-
-        /* 内容卡片 */
-        .main-content { margin-left: 80px; flex: 1; padding: 30px; overflow-y: auto; box-sizing: border-box; }
-        .card { 
-            background: #fff; border-radius: 12px; padding: 30px; margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--v-red);
-            animation: fadeIn 0.4s ease-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .collapse-header:hover { background: #fdfaf5; }
+        .collapse-header h3 { margin: 0; font-family: 'Noto Serif SC', serif; font-size: 1.2em; color: var(--v-green); }
+        .collapse-header .arrow { font-size: 12px; color: #ccc; transition: 0.3s; }
         
-        .card h3 { margin: 0 0 15px 0; color: var(--v-green); font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
-        .card-body { color: #333; line-height: 1.8; white-space: pre-wrap; font-size: 16px; }
+        .collapse-content { 
+            max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fff; border-top: 1px solid #f9f9f9;
+        }
+        .collapse-content.open { max-height: 2000px; } /* 足够大以容纳内容 */
+        .inner-body { padding: 20px 25px 30px; color: #333; line-height: 1.8; white-space: pre-wrap; font-size: 15px; }
+
+        /* 返回按钮样式（隐藏在侧边栏） */
+        .nav-back { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: auto; padding-bottom: 30px; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div id="site-logo-container" onclick="location.reload()">
+        <div id="site-logo-container" onclick="showHome()">
             <div class="knot"></div>
             <div class="knot-line"></div>
             <div class="paper-tag">
                 <div class="site-name-v">折立</div>
             </div>
         </div>
-        <div id="label-list"></div>
+        <div class="nav-back" onclick="showHome()">返回标签</div>
     </div>
     
-    <div class="main-content">
-        <div id="feed">正在同步笔记...</div>
+    <div class="main-content" id="main-view">
+        <div id="feed">同步中...</div>
     </div>
 
     <script>
         const repo = 'skakla/mmkkl';
-        const feed = document.getElementById('feed');
+        let allIssues = [];
 
-        async function fetchNotes() {
+        async function init() {
             try {
-                // 增加时间戳，强行绕过 API 缓存
                 const res = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&t=${Date.now()}`);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                
-                window.allData = data;
-                renderLabels(data);
-                renderNotes(data);
+                allIssues = await res.json();
+                showHome();
             } catch (e) {
-                feed.innerHTML = '<div class="card"><h3>同步暂时中断</h3><div class="card-body">请确保仓库已公开或检查网络。</div></div>';
+                document.getElementById('feed').innerHTML = "同步中断，请检查仓库。";
             }
         }
 
-        function renderLabels(data) {
-            const labels = new Set();
-            data.forEach(i => i.labels.forEach(l => labels.add(l.name)));
-            const list = document.getElementById('label-list');
-            list.innerHTML = '';
-            labels.forEach(name => {
-                const d = document.createElement('div');
-                d.className = 'nav-label';
-                d.innerText = name;
-                d.onclick = () => {
-                    document.querySelectorAll('.nav-label').forEach(el => el.classList.remove('active'));
-                    d.classList.add('active');
-                    renderNotes(window.allData.filter(i => i.labels.some(l => l.name === name)));
-                };
-                list.appendChild(d);
+        // 首页：九宫格标签页
+        function showHome() {
+            const view = document.getElementById('main-view');
+            const labelsMap = {};
+            allIssues.forEach(item => {
+                item.labels.forEach(l => {
+                    labelsMap[l.name] = (labelsMap[l.name] || 0) + 1;
+                });
             });
-        }
 
-        function renderNotes(notes) {
-            feed.innerHTML = '';
-            if(notes.length === 0) {
-                feed.innerHTML = '<p style="color:white">暂无内容</p>';
-                return;
+            let html = `<div class="grid-container">`;
+            for (const [name, count] of Object.entries(labelsMap)) {
+                html += `
+                    <div class="grid-item" onclick="showCategory('${name}')">
+                        <div class="label-name">${name}</div>
+                        <div class="count">${count} 条笔记</div>
+                    </div>
+                `;
             }
-            notes.forEach(item => {
-                const c = document.createElement('div');
-                c.className = 'card';
-                c.innerHTML = `<h3>${item.title}</h3><div class="card-body">${item.body || ''}</div>`;
-                feed.appendChild(c);
-            });
+            html += `</div>`;
+            view.innerHTML = html;
         }
 
-        fetchNotes();
+        // 分类页：折叠列表页
+        function showCategory(labelName) {
+            const view = document.getElementById('main-view');
+            const filtered = allIssues.filter(i => i.labels.some(l => l.name === labelName));
+            
+            let html = `<h2 style="font-family:'Noto Serif SC'; color:white; margin-bottom:30px;"># ${labelName}</h2>`;
+            filtered.forEach((item, idx) => {
+                html += `
+                    <div class="collapse-card">
+                        <div class="collapse-header" onclick="toggleCard(this)">
+                            <h3>${item.title}</h3>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="collapse-content">
+                            <div class="inner-body">${item.body || '无内容'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            view.innerHTML = html;
+        }
+
+        // 手风琴切换逻辑
+        function toggleCard(el) {
+            const content = el.nextElementSibling;
+            const arrow = el.querySelector('.arrow');
+            const isOpen = content.classList.contains('open');
+            
+            // 关闭其他已打开的（可选，如果想同时打开多个就注释掉下面这两行）
+            // document.querySelectorAll('.collapse-content').forEach(c => c.classList.remove('open'));
+            // document.querySelectorAll('.arrow').forEach(a => a.style.transform = 'rotate(0deg)');
+
+            if (!isOpen) {
+                content.classList.add('open');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.remove('open');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        init();
     </script>
 </body>
 </html>
