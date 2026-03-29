@@ -3,171 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>折立 - 精致中国结版</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;900&display=swap" rel="stylesheet">
+    <title>折立 - 复古精致版</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --v-red: #A32D21;     /* 稍微调深一点的中国红 */
-            --v-orange: #F7AD45;  /* 港式橙 */
-            --v-green: #657C6A;   /* 护眼绿 */
-            --v-gray: #A2B9A7;    /* 港式灰背景 */
-            --paper: #fdf6e3;     /* 复古纸片色 */
-            --card: #ffffff;      /* 卡片白 */
+            --v-red: #A32D21; --v-orange: #F7AD45; --v-green: #657C6A; 
+            --v-gray: #A2B9A7; --paper: #fdf6e3; --card: #ffffff;
         }
-
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; display: flex; overflow: hidden; }
         
-        /* 侧边栏 */
+        /* 侧边栏布局 */
         .sidebar { 
             position: fixed; top: 0; left: 0; width: 80px; height: 100vh; 
             background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
         }
 
-        /* --- 【精致打磨：中国结挂件系统】 --- */
+        /* --- 中国结挂件系统 --- */
         #site-logo-container {
-            position: absolute; 
-            top: 20px; 
-            left: 50%; /* 居中定位 */
-            transform: translateX(-50%);
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            cursor: pointer;
-            z-index: 150;
-            transition: transform 0.3s;
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; cursor: pointer; z-index: 150;
         }
-        #site-logo-container:hover { transform: translateX(-50%) rotate(2deg); }
 
-        /* CSS 画出复杂的中国结模型 */
-        .knot-structure {
+        /* 强化版中国结 */
+        .knot-box {
+            width: 26px; height: 26px; background: var(--v-red);
+            transform: rotate(45deg); border-radius: 3px;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
             position: relative;
-            width: 28px; height: 28px;
-            background: var(--v-red);
-            transform: rotate(45deg); /* 基础菱形 */
-            border-radius: 4px;
-            box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
         }
-        /* 内部叠加菱形，模拟编织感 */
-        .knot-structure::before {
-            content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
-            background: var(--v-green);
-            border-radius: 2px;
-            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.15);
-        }
-        /* 红色的核心 */
-        .knot-structure::after {
-            content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-            background: var(--v-red);
-            border-radius: 50%;
+        .knot-box::after {
+            content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 2px;
         }
 
-        /* 细红线：要细，有垂坠感 */
-        .knot-string {
-            width: 1.5px; 
-            height: 25px; /* 拉长红线，更有味道 */
-            background-color: var(--v-red);
-            margin: -3px 0; /* 銜接处微调 */
-            box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-        }
+        /* 垂坠红线 */
+        .knot-line { width: 1.5px; height: 22px; background: var(--v-red); margin: -2px 0; }
 
-        /* 复古纸片：偏左且有“挂”感 */
+        /* 挂着的小纸片 */
         .paper-tag {
-            background-color: var(--paper);
-            padding: 10px 5px; /* 窄长的纸片 */
-            border-radius: 2px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-            position: relative;
-            transform: rotate(-1.5deg); /* 微微旋转模拟自然晃动 */
-            border: 1px solid rgba(0,0,0,0.1);
-            transition: 0.3s;
+            background: var(--paper); padding: 10px 6px; border-radius: 2px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1);
+            transform: rotate(-1.5deg); /* 灵动感 */
+            display: flex; justify-content: center; align-items: center;
         }
-        
-        /* 纸片上的名字：折立 (竖排) */
+
+        /* 纸片上的字 */
         .site-name-vertical { 
-            writing-mode: vertical-rl; 
-            color: #2c1e14; /* 深咖啡色，清晰可见 */
-            font-family: 'Noto Serif SC', serif; 
-            font-size: 18px; 
-            font-weight: 900; 
-            letter-spacing: 4px; 
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            white-space: nowrap;
+            writing-mode: vertical-rl; color: #2c1e14; 
+            font-family: 'Noto Serif SC', serif; font-size: 18px; 
+            font-weight: 900; letter-spacing: 4px; text-align: center;
         }
 
-        /* --- 导航标签与内容区保持一致 --- */
-        #label-list { margin-top: 170px; /* 给吊饰留出空间 */ width: 100%; }
-        .nav-label { color: rgba(244, 241, 234, 0.7); font-size: 15px; margin: 18px 0; cursor: pointer; transition: 0.2s; position: relative; padding: 5px 0; width: 100%; text-align: center; font-weight: bold;}
+        /* 标签导航列表 */
+        #label-list { margin-top: 170px; width: 100%; overflow-y: auto; }
+        .nav-label { 
+            color: rgba(255, 255, 255, 0.7); font-size: 14px; margin: 15px 0; 
+            cursor: pointer; text-align: center; font-weight: bold; position: relative; padding: 5px 0;
+        }
         .nav-label.active { color: #fff; }
-        .nav-label.active::after { content: ''; position: absolute; bottom: -2px; left: 25%; width: 50%; height: 2px; background-color: var(--v-orange); border-radius: 2px; }
+        .nav-label.active::after { 
+            content: ''; position: absolute; bottom: -2px; left: 25%; 
+            width: 50%; height: 2px; background: var(--v-orange); 
+        }
 
+        /* 右侧内容区 */
         .main-content { margin-left: 80px; flex: 1; padding: 30px; overflow-y: auto; height: 100vh; box-sizing: border-box; }
-        .card { background: var(--card); border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(101,124,106,0.1); border-left: 6px solid var(--v-red); position: relative; animation: fadeInUp 0.5s ease backwards;}
+        .card { 
+            background: var(--card); border-radius: 12px; padding: 30px; margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--v-red);
+            animation: fadeInUp 0.5s ease backwards;
+        }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        .card h3 { margin-top: 0; color: var(--v-green); font-size: 1.6em; font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 18px; }
-        .card-body { color: #333; line-height: 1.9; white-space: pre-wrap; padding-bottom: 40px; font-size: 1.05em; }
-        .card-footer-tags { position: absolute; right: 25px; bottom: 18px; display: flex; gap: 8px; }
-        .inner-tag { padding: 3px 12px; border-radius: 15px; font-size: 11px; color: #fff; font-weight: bold; background: var(--v-green); }
+        .card h3 { margin: 0 0 15px 0; color: var(--v-green); font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
+        .card-body { color: #333; line-height: 1.8; white-space: pre-wrap; font-size: 16px; padding-bottom: 30px; }
+        
+        .tag-container { display: flex; gap: 8px; justify-content: flex-end; }
+        .tag-pill { padding: 3px 12px; border-radius: 15px; font-size: 11px; color: #fff; font-weight: bold; background: var(--v-green); }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div id="site-logo-container" onclick="location.reload()">
-            <div class="knot-structure"></div>
-            <div class="knot-string"></div>
+            <div class="knot-box"></div>
+            <div class="knot-line"></div>
             <div class="paper-tag">
                 <div class="site-name-vertical">折立</div>
             </div>
         </div>
         <div id="label-list"></div>
     </div>
+    
     <div class="main-content">
-        <div id="feed">正在同步笔记...</div>
+        <div id="feed">正在同步云端笔记...</div>
     </div>
 
     <script>
-        const repo = 'skakla/mmkkl';
+        const repo = 'skakla/mmkkl'; // 仓库路径
         const feed = document.getElementById('feed');
         const lList = document.getElementById('label-list');
 
-        fetch(`https://api.github.com/repos/${repo}/issues?per_page=100`)
-            .then(r => r.json())
-            .then(data => {
-                window.allData = data;
+        // 强力加载函数
+        async function loadNotes() {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${repo}/issues?per_page=100&state=open`);
+                if (!response.ok) throw new Error('API请求失败');
+                const data = await response.json();
+                
+                window.allNotes = data;
+                
+                // 1. 提取并渲染标签
                 const labels = new Set();
-                data.forEach(i => i.labels.forEach(l => labels.add(l.name)));
+                data.forEach(item => item.labels.forEach(l => labels.add(l.name)));
                 
                 lList.innerHTML = '';
                 labels.forEach(name => {
-                    const d = document.createElement('div');
-                    d.className = 'nav-label';
-                    d.innerText = name;
-                    d.onclick = () => filter(name, d);
-                    lList.appendChild(d);
+                    const btn = document.createElement('div');
+                    btn.className = 'nav-label';
+                    btn.innerText = name;
+                    btn.onclick = () => {
+                        document.querySelectorAll('.nav-label').forEach(el => el.classList.remove('active'));
+                        btn.classList.add('active');
+                        render(data.filter(i => i.labels.some(l => l.name === name)));
+                    };
+                    lList.appendChild(btn);
                 });
-                render(data);
-            })
-            .catch(() => feed.innerHTML = '加载失败，请刷新。');
 
-        function render(data) {
+                // 2. 渲染全部笔记
+                render(data);
+
+            } catch (err) {
+                feed.innerHTML = '<div class="card"><h3>同步失败</h3><div class="card-body">请检查网络连接或仓库权限。</div></div>';
+            }
+        }
+
+        function render(notes) {
             feed.innerHTML = '';
-            data.forEach((item, index) => {
-                const c = document.createElement('div');
-                c.className = 'card';
-                c.style.animationDelay = (index * 0.1) + 's';
-                const ts = item.labels.map(l => `<span class="inner-tag" style="background:#${l.color}">${l.name}</span>`).join('');
-                c.innerHTML = `<h3>${item.title}</h3><div class="card-body">${item.body}</div><div class="card-footer-tags">${ts || '<span class="inner-tag">未分类</span>'}</div>`;
-                feed.appendChild(c);
+            if (notes.length === 0) {
+                feed.innerHTML = '<p>该分类下暂无笔记。</p>';
+                return;
+            }
+            notes.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                const tags = item.labels.map(l => `<span class="tag-pill" style="background:#${l.color}">${l.name}</span>`).join('');
+                card.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <div class="card-body">${item.body || '无内容'}</div>
+                    <div class="tag-container">${tags}</div>
+                `;
+                feed.appendChild(card);
             });
         }
 
-        function filter(name, el) {
-            document.querySelectorAll('.nav-label').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-            render(window.allData.filter(i => i.labels.some(l => l.name === name)));
-        }
+        loadNotes();
     </script>
 </body>
 </html>
