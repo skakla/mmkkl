@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>折立</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
+    <title>折立 - 精致中国结版</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --v-red: #BB3E00; --v-orange: #F7AD45; --v-green: #657C6A; 
-            --v-gray: #A2B9A7; --paper: #fdf6e3;
+            --v-red: #A32D21;     /* 稍微调深一点的中国红 */
+            --v-orange: #F7AD45;  /* 港式橙 */
+            --v-green: #657C6A;   /* 护眼绿 */
+            --v-gray: #A2B9A7;    /* 港式灰背景 */
+            --paper: #fdf6e3;     /* 复古纸片色 */
+            --card: #ffffff;      /* 卡片白 */
         }
+
         body, html { margin: 0; padding: 0; height: 100%; background: var(--v-gray); font-family: sans-serif; display: flex; overflow: hidden; }
         
         /* 侧边栏 */
@@ -18,67 +23,102 @@
             background: var(--v-green); z-index: 100; display: flex; flex-direction: column; align-items: center; 
         }
 
-        /* 挂件容器 - 偏左 */
+        /* --- 【精致打磨：中国结挂件系统】 --- */
         #site-logo-container {
-            position: absolute; top: 15px; left: 10px;
-            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            position: absolute; 
+            top: 20px; 
+            left: 50%; /* 居中定位 */
+            transform: translateX(-50%);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            cursor: pointer;
+            z-index: 150;
+            transition: transform 0.3s;
+        }
+        #site-logo-container:hover { transform: translateX(-50%) rotate(2deg); }
+
+        /* CSS 画出复杂的中国结模型 */
+        .knot-structure {
+            position: relative;
+            width: 28px; height: 28px;
+            background: var(--v-red);
+            transform: rotate(45deg); /* 基础菱形 */
+            border-radius: 4px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+        }
+        /* 内部叠加菱形，模拟编织感 */
+        .knot-structure::before {
+            content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
+            background: var(--v-green);
+            border-radius: 2px;
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.15);
+        }
+        /* 红色的核心 */
+        .knot-structure::after {
+            content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
+            background: var(--v-red);
+            border-radius: 50%;
         }
 
-        /* 中国结 */
-        .knot {
-            width: 24px; height: 24px; background: var(--v-red);
-            transform: rotate(45deg); border-radius: 2px;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        /* 细红线：要细，有垂坠感 */
+        .knot-string {
+            width: 1.5px; 
+            height: 25px; /* 拉长红线，更有味道 */
+            background-color: var(--v-red);
+            margin: -3px 0; /* 銜接处微调 */
+            box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
         }
 
-        /* 红线 */
-        .line { width: 2px; height: 18px; background: var(--v-red); margin: -2px 0; }
-
-        /* 纸片 */
-        .paper {
-            background: var(--paper); padding: 10px 6px; border-radius: 2px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transform: rotate(-1deg);
+        /* 复古纸片：偏左且有“挂”感 */
+        .paper-tag {
+            background-color: var(--paper);
+            padding: 10px 5px; /* 窄长的纸片 */
+            border-radius: 2px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+            transform: rotate(-1.5deg); /* 微微旋转模拟自然晃动 */
             border: 1px solid rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        
+        /* 纸片上的名字：折立 (竖排) */
+        .site-name-vertical { 
+            writing-mode: vertical-rl; 
+            color: #2c1e14; /* 深咖啡色，清晰可见 */
+            font-family: 'Noto Serif SC', serif; 
+            font-size: 18px; 
+            font-weight: 900; 
+            letter-spacing: 4px; 
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
         }
 
-        /* 纸片上的字 - 强制深色显示 */
-        .site-name { 
-            writing-mode: vertical-rl; color: #2c1e14 !important; 
-            font-family: 'Noto Serif SC', serif; font-size: 18px; 
-            font-weight: 900; letter-spacing: 4px; text-align: center;
-        }
-
-        /* 标签列表 */
-        #label-list { margin-top: 155px; width: 100%; }
-        .nav-label { 
-            color: rgba(255, 255, 255, 0.7); font-size: 15px; margin: 15px 0; 
-            cursor: pointer; text-align: center; font-weight: bold; position: relative;
-        }
+        /* --- 导航标签与内容区保持一致 --- */
+        #label-list { margin-top: 170px; /* 给吊饰留出空间 */ width: 100%; }
+        .nav-label { color: rgba(244, 241, 234, 0.7); font-size: 15px; margin: 18px 0; cursor: pointer; transition: 0.2s; position: relative; padding: 5px 0; width: 100%; text-align: center; font-weight: bold;}
         .nav-label.active { color: #fff; }
-        .nav-label.active::after { 
-            content: ''; position: absolute; bottom: -4px; left: 25%; 
-            width: 50%; height: 2px; background: var(--v-orange); 
-        }
+        .nav-label.active::after { content: ''; position: absolute; bottom: -2px; left: 25%; width: 50%; height: 2px; background-color: var(--v-orange); border-radius: 2px; }
 
-        /* 内容区 */
-        .main-content { margin-left: 80px; flex: 1; padding: 30px; overflow-y: auto; box-sizing: border-box; }
-        .card { 
-            background: #fff; border-radius: 12px; padding: 25px; margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid var(--v-red);
-        }
-        .card h3 { margin: 0 0 15px 0; color: var(--v-green); font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .card-body { color: #444; line-height: 1.8; white-space: pre-wrap; font-size: 16px; }
-        .tag-box { margin-top: 20px; display: flex; gap: 8px; justify-content: flex-end; }
-        .tag { padding: 2px 10px; border-radius: 10px; font-size: 11px; color: #fff; background: var(--v-green); }
+        .main-content { margin-left: 80px; flex: 1; padding: 30px; overflow-y: auto; height: 100vh; box-sizing: border-box; }
+        .card { background: var(--card); border-radius: 12px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(101,124,106,0.1); border-left: 6px solid var(--v-red); position: relative; animation: fadeInUp 0.5s ease backwards;}
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card h3 { margin-top: 0; color: var(--v-green); font-size: 1.6em; font-family: 'Noto Serif SC', serif; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 18px; }
+        .card-body { color: #333; line-height: 1.9; white-space: pre-wrap; padding-bottom: 40px; font-size: 1.05em; }
+        .card-footer-tags { position: absolute; right: 25px; bottom: 18px; display: flex; gap: 8px; }
+        .inner-tag { padding: 3px 12px; border-radius: 15px; font-size: 11px; color: #fff; font-weight: bold; background: var(--v-green); }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div id="site-logo-container" onclick="location.reload()">
-            <div class="knot"></div>
-            <div class="line"></div>
-            <div class="paper">
-                <div class="site-name">折立</div>
+            <div class="knot-structure"></div>
+            <div class="knot-string"></div>
+            <div class="paper-tag">
+                <div class="site-name-vertical">折立</div>
             </div>
         </div>
         <div id="label-list"></div>
@@ -109,15 +149,16 @@
                 });
                 render(data);
             })
-            .catch(() => feed.innerHTML = '加载失败');
+            .catch(() => feed.innerHTML = '加载失败，请刷新。');
 
         function render(data) {
             feed.innerHTML = '';
-            data.forEach(item => {
+            data.forEach((item, index) => {
                 const c = document.createElement('div');
                 c.className = 'card';
-                const ts = item.labels.map(l => `<span class="tag" style="background:#${l.color}">${l.name}</span>`).join('');
-                c.innerHTML = `<h3>${item.title}</h3><div class="card-body">${item.body}</div><div class="tag-box">${ts}</div>`;
+                c.style.animationDelay = (index * 0.1) + 's';
+                const ts = item.labels.map(l => `<span class="inner-tag" style="background:#${l.color}">${l.name}</span>`).join('');
+                c.innerHTML = `<h3>${item.title}</h3><div class="card-body">${item.body}</div><div class="card-footer-tags">${ts || '<span class="inner-tag">未分类</span>'}</div>`;
                 feed.appendChild(c);
             });
         }
