@@ -4,48 +4,34 @@
     <meta charset="UTF-8">
     <title>Skakla 的灵感空间</title>
     <style>
-        /* 1. 基础装修：深色质感 */
-        body { background-color: #121212; color: #e0e0e0; font-family: 'Segoe UI', system-ui, sans-serif; padding: 40px 20px; max-width: 850px; margin: 0 auto; line-height: 1.6; }
-        header { text-align: center; margin-bottom: 50px; animation: fadeInDown 1s ease; }
-        h1 { color: #ff4500; font-size: 2.5em; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        /* 基础样式：深色酷炫 */
+        body { background: #121212; color: #e0e0e0; font-family: sans-serif; padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        h1 { color: #ff4500; text-align: center; margin-bottom: 40px; }
         
-        /* 2. 动画效果定义 */
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        /* 进场动画：由下往上滑入 */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 3. 分类按钮样式 */
-        .nav-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .btn { background: #2d2d2d; color: #ff4500; border: 1px solid #ff4500; padding: 8px 18px; text-decoration: none; border-radius: 20px; transition: 0.3s; font-size: 0.9em; }
-        .btn:hover { background: #ff4500; color: white; box-shadow: 0 0 15px #ff4500; }
-
-        /* 4. 笔记卡片样式 & 动画 */
+        /* 卡片装修 */
         .card { 
-            background: #1e1e1e; padding: 25px; border-radius: 12px; border-left: 4px solid #ff4500; 
-            margin-bottom: 25px; transition: 0.4s; position: relative;
-            animation: fadeInUp 0.8s ease backwards; /* 进场动画 */
+            background: #1e1e1e; padding: 20px; border-radius: 10px; margin-bottom: 20px;
+            border-left: 5px solid #ff4500; animation: fadeInUp 0.6s ease-out both;
+            transition: 0.3s; /* 悬停动画时间 */
         }
-        .card:hover { transform: translateY(-8px); background: #252525; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card h3 { color: #ff4500; margin-top: 0; font-size: 1.4em; }
-        
-        /* 5. 分类标签小图标 */
-        .tag { background: #ff4500; color: white; font-size: 0.7em; padding: 2px 8px; border-radius: 4px; vertical-align: middle; margin-right: 10px; }
-        .issue-body { color: #bbb; white-space: pre-wrap; margin-top: 10px; }
+        .card:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(255,69,0,0.3); }
+
+        /* 标签样式 */
+        .tag { 
+            display: inline-block; padding: 2px 10px; border-radius: 15px; 
+            font-size: 0.7em; margin-right: 8px; color: white; background: #ff4500;
+        }
+        .issue-body { color: #bbb; white-space: pre-wrap; margin-top: 10px; font-size: 0.95em; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Skakla's Space</h1>
-        <p>「分类管理 · 动态同步 · 视觉美学」</p>
-    </header>
-
-    <div class="nav-bar">
-        <a href="https://github.com/skakla/mmkkl/issues" class="btn">＋ 发布新笔记</a>
-    </div>
-    
-    <div id="feed"></div>
+    <h1>Skakla's Space</h1>
+    <div id="feed"><p>正在加载云端分类笔记...</p></div>
 
     <script>
-        // 自动同步与动画生成
         fetch('https://api.github.com/repos/skakla/mmkkl/issues')
             .then(res => res.json())
             .then(data => {
@@ -54,11 +40,17 @@
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'card';
-                    // 让卡片按顺序一个一个跳出来（延迟动画）
-                    card.style.animationDelay = (index * 0.2) + 's';
+                    card.style.animationDelay = (index * 0.15) + 's'; // 让卡片一个接一个跳出来
                     
+                    // 把 GitHub 的标签转化成网页上的小标签
+                    let tagsHtml = '';
+                    item.labels.forEach(l => {
+                        tagsHtml += `<span class="tag" style="background:#${l.color}">${l.name}</span>`;
+                    });
+
                     card.innerHTML = `
-                        <h3><span class="tag">笔记</span>${item.title}</h3>
+                        <div>${tagsHtml}</div>
+                        <h3>${item.title}</h3>
                         <div class="issue-body">${item.body}</div>
                     `;
                     feed.appendChild(card);
